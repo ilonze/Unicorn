@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Unicorn.Core.Serializers;
+using Unicorn.Serializers;
 
-namespace Unicorn.Core.Caching
+namespace Unicorn.Caching
 {
     public class DistributedUnicornCacheProvider: IUnicornCacheProvider
     {

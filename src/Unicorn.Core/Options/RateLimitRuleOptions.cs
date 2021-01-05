@@ -6,12 +6,9 @@ namespace Unicorn.Options
 {
     public class RateLimitRuleOptions
     {
-        public RateLimitRuleOptions()
-        {
-            ClientWhitelist = new List<string>();
-        }
+        public List<string> IPAllowedList { get; set; } = new List<string>();
 
-        public List<string> ClientWhitelist { get; set; }
+        public List<string> UserAgentAllowedList { get; set; } = new List<string>();
 
         /// <summary>
         /// Enables endpoint rate limiting based URL path and HTTP verb

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Unicorn.Core
+namespace Unicorn
 {
     public class Service
     {

@@ -31,8 +31,9 @@ namespace Unicorn.Extensions
             app.UseWhen(context => context.MatchRoute(), app =>
             {
                 app.UseMiddleware<UnicornMiddleware>();
-                app.UseMiddleware<UnicornABListMiddleware>();
                 app.UseMiddleware<UnicornRateLimitMiddleware>();
+                app.UseMiddleware<UnicornABListMiddleware>();
+                app.UseMiddleware<UnicornCacheMiddleware>();
                 app.UseMiddleware<UnicornAuthenticationMiddleware>();
                 app.UseMiddleware<UnicornEncryptMiddleware>();
                 app.UseMiddleware<UnicornSignMiddleware>();
@@ -41,7 +42,6 @@ namespace Unicorn.Extensions
                 app.UseMiddleware<UnicornLoadBalanceMiddleware>();
                 app.UseMiddleware<UnicornAggregateMiddleware>();
                 app.UseMiddleware<UnicornHeaderMiddleware>();
-                app.UseMiddleware<UnicornCacheMiddleware>();
             });
 
             return app;

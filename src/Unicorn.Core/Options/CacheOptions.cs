@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Unicorn.Options
+﻿namespace Unicorn.Options
 {
     public class CacheOptions
     {

@@ -1,14 +1,10 @@
-﻿//using Microsoft.AspNetCore.Routing.Template;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Unicorn.Options
+namespace Unicorn
 {
     public class DownstreamRoute
     {
         public string DownstreamRouteTemplate { get; set; }
-        //internal TemplateBinder DownstreamRouteTemplateBinder { get; set; }
         public List<DownstreamFactor> DownstreamFactors { get; set; }
         public string DownstreamServiceNamespace { get; set; }
         public string DownstreamServiceName { get; set; }

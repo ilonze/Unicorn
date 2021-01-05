@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Unicorn.Core.Caching
+namespace Unicorn.Caching
 {
     public interface IUnicornCacheProvider
     {

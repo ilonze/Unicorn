@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Unicorn.AggregateProviders;
-using Unicorn.Core;
 using Unicorn.DataFormatConverters;
 using Unicorn.EncryptProviders;
 using Unicorn.FileProviders;
@@ -15,7 +14,8 @@ namespace Unicorn.Options
     public class UnicornOptions
     {
         public bool IsMaster { get; set; }
-        public bool IsUseDistributedCace { get; set; }
+        public bool UnicornDataUseDistributedCace { get; set; }
+        public bool ResponseDataUseDistributedCace { get; set; }
         public List<RouteRule> RouteRules { get; set; } = new List<RouteRule>();
         public List<Service> Services { get; set; } = new List<Service>();
         public GlobalOptions GlobalOptions { get; set; }

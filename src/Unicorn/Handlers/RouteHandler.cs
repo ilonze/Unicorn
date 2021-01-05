@@ -1,18 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Internal;
 using Microsoft.AspNetCore.Routing.Template;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Unicorn.Caches;
-using Unicorn.Core.Exceptions;
 using Unicorn.Options;
 
 namespace Unicorn.Handlers
@@ -52,7 +44,6 @@ namespace Unicorn.Handlers
         {
             var template = TemplateParser.Parse(route.DownstreamRouteTemplate);
             var binder = _templateBinderFactory.Create(template, GetDefaults(template));
-            //route.DownstreamRouteTemplateBinder = binder;
             _routeDownstreamDictionary[route.DownstreamRouteTemplate] = binder;
             if (route.DownstreamFactors == null || route.DownstreamFactors.Count == 0)
             {
@@ -91,7 +82,6 @@ namespace Unicorn.Handlers
         {
             var template = TemplateParser.Parse(route.UpstreamRouteTemplate);
             var matcher = new TemplateMatcher(template, GetDefaults(template));
-            //route.UpstreamRouteTemplateMatcher = matcher;
             _routeUpstreamTemplateDictionary[route.UpstreamRouteTemplate] = matcher;
 
             if (route.DownstreamRoutes == null || route.DownstreamRoutes.Count == 0)
@@ -100,7 +90,6 @@ namespace Unicorn.Handlers
                 ParseDownstreamRoute(dsRoute);
                 route.DownstreamRoutes ??= new List<DownstreamRoute>();
                 route.DownstreamRoutes.Add(dsRoute);
-                //route.DownstreamRouteTemplateBinder = dsRoute.DownstreamRouteTemplateBinder;
             }
             else
             {

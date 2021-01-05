@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Unicorn.Core.Serializers
+namespace Unicorn.Serializers
 {
     public class JsonSerializerOptions
     {

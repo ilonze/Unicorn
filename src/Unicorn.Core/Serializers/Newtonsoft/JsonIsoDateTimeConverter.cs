@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NewtonsoftJsonSerializer = Newtonsoft.Json.JsonSerializer;
 
-namespace Unicorn.Core.Serializers.Newtonsoft
+namespace Unicorn.Serializers.Newtonsoft
 {
     public class JsonIsoDateTimeConverter : IsoDateTimeConverter
     {

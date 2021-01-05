@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Unicorn.Core;
-using Unicorn.Core.Caching;
-using Unicorn.Core.Exceptions;
+using Unicorn;
+using Unicorn.Caching;
+using Unicorn.Exceptions;
 using Unicorn.Options;
 
 namespace Unicorn.Caches
@@ -55,7 +55,7 @@ namespace Unicorn.Caches
 
         public async Task<Dictionary<string, LoadBalanceData>> GetServicesLoadBalaceDataAsync(string serviceName, IEnumerable<string> serviceIds)
         {
-            var cache = _options.IsUseDistributedCace && _options.IsShareLoadBalance ? _distributedCache : _memoryCache;
+            var cache = _options.UnicornDataUseDistributedCace && _options.IsShareLoadBalance ? _distributedCache : _memoryCache;
             var dict = new Dictionary<string, LoadBalanceData>();
             foreach (var serviceId in serviceIds)
             {
@@ -69,7 +69,7 @@ namespace Unicorn.Caches
         {
             var timeKey = _options.CacheKeyPrefix + "ratelimit:times:" + featureKey;
             var valueKey = _options.CacheKeyPrefix + "ratelimit:values:" + featureKey;
-            var cache = _options.IsUseDistributedCace && _options.IsShareRateLimit ? _distributedCache : _memoryCache;
+            var cache = _options.UnicornDataUseDistributedCace && _options.IsShareRateLimit ? _distributedCache : _memoryCache;
             var data = await cache.GetAsync<List<long>>(timeKey) ?? new List<long>();
             var result = data.Count < limit;
             data = data.Where(r => DateTimeOffset.MinValue.AddTicks(r + BaseTime) < DateTimeOffset.Now.Add(-expire)).TakeLast(limit - 1).ToList();
@@ -81,8 +81,25 @@ namespace Unicorn.Caches
 
         public async Task SetServiceLoadBalaceDataAsync(string serviceName, string serviceId, LoadBalanceData data)
         {
-            var cache = _options.IsUseDistributedCace && _options.IsShareLoadBalance ? _distributedCache : _memoryCache;
+            var cache = _options.UnicornDataUseDistributedCace && _options.IsShareLoadBalance ? _distributedCache : _memoryCache;
             await cache.SetAsync(_options.CacheKeyPrefix + "loadbalance:" + serviceName + ":" + serviceId, data, DateTimeOffset.MaxValue);
+        }
+
+        public async Task SetResponseDataAsync(string featureKey, byte[] data, Dictionary<string, string> headers, int seconds)
+        {
+            await SetResponseDataAsync(featureKey, new ResponseData { Data = data, Headers = headers }, seconds);
+        }
+
+        public async Task SetResponseDataAsync(string featureKey, ResponseData responseData, int seconds)
+        {
+            var cache = _options.ResponseDataUseDistributedCace ? _distributedCache : _memoryCache;
+            await cache.SetAsync(_options.CacheKeyPrefix + "response:" + featureKey, responseData, DateTimeOffset.Now.AddSeconds(seconds));
+        }
+
+        public async Task<ResponseData> GetResponseDataAsync(string featureKey)
+        {
+            var cache = _options.ResponseDataUseDistributedCace ? _distributedCache : _memoryCache;
+            return await cache.GetAsync<ResponseData>(_options.CacheKeyPrefix + "response:" + featureKey);
         }
     }
 }

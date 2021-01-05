@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Unicorn.Core.Exceptions
+namespace Unicorn.Exceptions
 {
     public class RouteValueMissingException : Exception
     {

@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Unicorn.Core.Exceptions;
-using Unicorn.Core.Serializers.Newtonsoft;
+using Unicorn.Exceptions;
+using Unicorn.Serializers.Newtonsoft;
 
-namespace Unicorn.Core.Serializers
+namespace Unicorn.Serializers
 {
     public class JsonSerializer : IJsonSerializer
     {

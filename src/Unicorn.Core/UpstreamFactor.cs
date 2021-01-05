@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Unicorn.Options
+namespace Unicorn
 {
     public class UpstreamFactor: Authority
     {

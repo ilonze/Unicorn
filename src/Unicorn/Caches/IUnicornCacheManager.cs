@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Unicorn.Core;
-using Unicorn.Options;
 
 namespace Unicorn.Caches
 {
@@ -16,5 +13,8 @@ namespace Unicorn.Caches
         Task<Dictionary<string, LoadBalanceData>> GetServicesLoadBalaceDataAsync(string serviceName, IEnumerable<string> serviceIds);
         Task SetServiceLoadBalaceDataAsync(string serviceName, string serviceId, LoadBalanceData data);
         Task<bool> SetRateLimitDataAsync(string featureKey, string[] featureValues, TimeSpan expire, int limit);
+        Task SetResponseDataAsync(string featureKey, byte[] data, Dictionary<string, string> headers, int seconds);
+        Task SetResponseDataAsync(string featureKey, ResponseData responseData, int seconds);
+        Task<ResponseData> GetResponseDataAsync(string featureKey);
     }
 }

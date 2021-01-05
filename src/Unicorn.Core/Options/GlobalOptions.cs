@@ -7,7 +7,6 @@ namespace Unicorn.Options
 {
     public class GlobalOptions: DownstreamRoute
     {
-        public AggregateOptions AggregateOptions { get; set; }
         public Dictionary<string, string> AddHeadersToRequest { get; set; }
         public Dictionary<string, string> AddHeadersToRequestFromRoute { get; set; }
         public Dictionary<string, string> AddHeadersToResponse { get; set; }
@@ -17,7 +16,8 @@ namespace Unicorn.Options
         public Dictionary<string, string> UpstreamHeaderTransform { get; set; }
         public Dictionary<string, string> DownstreamHeaderTransform { get; set; }
         public Dictionary<int, int> HttpStatusCodeTransform { get; set; }
-        public QoSOptions QoS { get; set; }
+        public AggregateOptions AggregateOptions { get; set; }
+        public QoSOptions QoSOptions { get; set; }
         public LoadBalanceOptions LoadBalancerOptions { get; set; }
         public RateLimitRuleOptions RateLimitRuleOptions { get; set; }
         public AuthenticationOptions AuthenticationOptions { get; set; }

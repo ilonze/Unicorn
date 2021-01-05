@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Unicorn.Core.Caching;
-using Unicorn.Core.Serializers;
+using Unicorn.Caching;
+using Unicorn.Serializers;
 
-namespace Unicorn.Core.Extensions
+namespace Unicorn.Extensions
 {
     public static class ServiceCollectionExtensions
     {
