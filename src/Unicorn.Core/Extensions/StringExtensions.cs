@@ -11,14 +11,7 @@ namespace System
     {
         public static string Md5(this string str)
         {
-            string pwd = "";
-            MD5 md5 = MD5.Create();
-            byte[] s = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-            for (int i = 0; i < s.Length; i++)
-            {
-                pwd += s[i].ToString("X");
-            }
-            return pwd;
+            return Encoding.UTF8.GetBytes(str).Md5();
         }
     }
 }

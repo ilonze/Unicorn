@@ -6,6 +6,8 @@ namespace Unicorn.Options
 {
     public class QoSOptions
     {
+        public bool IsEnabled { get; set; } = false;
+
         /// <summary>
         /// 阀值
         /// </summary>

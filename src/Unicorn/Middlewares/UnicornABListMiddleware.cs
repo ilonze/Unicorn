@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,35 +13,23 @@ namespace Unicorn.Middlewares
 {
     public class UnicornABListMiddleware : IMiddleware
     {
-        protected UnicornOptions Options { get; }
+        protected ABListOptions Options { get; }
         protected UnicornContext UnicornContext { get; }
-        public UnicornABListMiddleware(
-            IOptions<UnicornOptions> options,
-            UnicornContext unicornContext)
+        public UnicornABListMiddleware(UnicornContext unicornContext)
         {
-            Options = options.Value;
+            Options = unicornContext.RouteRule.ABListOptions;
             UnicornContext = unicornContext;
         }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            if (UnicornContext.RouteRule.SecurityOptions?.IsABListEnabled() == true)
+            if (Options?.IsEnabled == true)
             {
-                if (!HandleABList(context, UnicornContext.RouteRule.SecurityOptions))
+                if (!HandleABList(context, Options))
                 {
                     UnicornContext.ResponseData = new ResponseData
                     {
-                        StatusCode = Options.GlobalOptions.SecurityOptions.BlockedStatusCode,
-                    };
-                    return;
-                }
-            }
-            else if(Options.GlobalOptions.SecurityOptions?.IsABListEnabled() == true)
-            {
-                if (!HandleABList(context, Options.GlobalOptions.SecurityOptions))
-                {
-                    UnicornContext.ResponseData = new ResponseData
-                    {
-                        StatusCode = Options.GlobalOptions.SecurityOptions.BlockedStatusCode,
+                        StatusCode = Options.BlockedStatusCode,
+                        StatusMessage = Options.BlockedMessage,
                     };
                     return;
                 }
@@ -48,51 +37,51 @@ namespace Unicorn.Middlewares
             await next(context);
         }
 
-        protected virtual bool HandleABList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleABList(HttpContext context, ABListOptions ablistOptions)
         {
-            if (securityOptions.IsAllowedEnabled())
+            if (ablistOptions.IsAllowedEnabled())
             {
-                return HandleAllowedList(context, securityOptions);
+                return HandleAllowedList(context, ablistOptions);
             }
             else
             {
-                return !HandleBlockedList(context, securityOptions);
+                return !HandleBlockedList(context, ablistOptions);
             }
         }
 
-        protected virtual bool HandleAllowedList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleAllowedList(HttpContext context, ABListOptions ablistOptions)
         {
-            return HandleIPAllowedList(context, securityOptions)
-                || HandleUserAgentAllowedList(context, securityOptions);
+            return HandleIPAllowedList(context, ablistOptions)
+                || HandleUserAgentAllowedList(context, ablistOptions);
         }
 
-        protected virtual bool HandleIPAllowedList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleIPAllowedList(HttpContext context, ABListOptions ablistOptions)
         {
-            return MatchIPs(context, securityOptions.IPAllowedList);
+            return MatchIPs(context, ablistOptions.IPAllowedList);
         }
 
-        protected virtual bool HandleUserAgentAllowedList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleUserAgentAllowedList(HttpContext context, ABListOptions ablistOptions)
         {
-            return MatchUserAgents(context, securityOptions.UserAgentAllowedList);
+            return MatchUserAgents(context, ablistOptions.UserAgentAllowedList);
         }
 
-        protected virtual bool HandleBlockedList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleBlockedList(HttpContext context, ABListOptions ablistOptions)
         {
-            return HandleIPBlockedList(context, securityOptions)
-                || HandleUserAgentBlockedList(context, securityOptions);
+            return HandleIPBlockedList(context, ablistOptions)
+                || HandleUserAgentBlockedList(context, ablistOptions);
         }
 
-        protected virtual bool HandleIPBlockedList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleIPBlockedList(HttpContext context, ABListOptions ablistOptions)
         {
-            return MatchIPs(context, securityOptions.IPBlockedList);
+            return MatchIPs(context, ablistOptions.IPBlockedList);
         }
 
-        protected virtual bool HandleUserAgentBlockedList(HttpContext context, SecurityOptions securityOptions)
+        protected virtual bool HandleUserAgentBlockedList(HttpContext context, ABListOptions ablistOptions)
         {
-            return MatchUserAgents(context, securityOptions.UserAgentBlockedList);
+            return MatchUserAgents(context, ablistOptions.UserAgentBlockedList);
         }
 
-        protected virtual bool MatchIPs(HttpContext context, List<string> ips)
+        protected virtual bool MatchIPs(HttpContext context, StringValues ips)
         {
             var userIp = context.Connection.RemoteIpAddress.ToString();
             if (userIp.Contains(":"))
@@ -139,7 +128,7 @@ namespace Unicorn.Middlewares
             return false;
         }
 
-        protected virtual bool MatchUserAgents(HttpContext context, List<string> userAgents)
+        protected virtual bool MatchUserAgents(HttpContext context, StringValues userAgents)
         {
             var ua = context.Request.Headers["UserAgent"].ToString();
             foreach (var userAgent in userAgents)

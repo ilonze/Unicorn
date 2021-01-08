@@ -2,10 +2,10 @@
 {
     public class CacheOptions
     {
-        public bool IsCahce { get; set; }
+        public bool IsEnabled { get; set; } = false;
 
-        public int TtlSeconds { get; set; }
+        public int TtlSeconds { get; set; } = 60 * 5;
 
-        public string Region { get; set; }
+        //public string Region { get; set; }
     }
 }

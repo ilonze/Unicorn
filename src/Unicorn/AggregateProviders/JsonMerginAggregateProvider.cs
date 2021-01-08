@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Unicorn.Core.Serializers;
+using Unicorn.Serializers;
 using Unicorn.Options;
 
 namespace Unicorn.AggregateProviders

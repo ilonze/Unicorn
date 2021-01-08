@@ -6,6 +6,7 @@ namespace Unicorn.Options
 {
     public class AuthenticationOptions
     {
+        public bool IsEnabled { get; set; } = false;
         public AuthenticationOptions()
         {
             AllowedScopes = new List<string>();

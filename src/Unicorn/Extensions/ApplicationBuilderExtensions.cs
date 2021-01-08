@@ -31,6 +31,7 @@ namespace Unicorn.Extensions
             app.UseWhen(context => context.MatchRoute(), app =>
             {
                 app.UseMiddleware<UnicornMiddleware>();
+                app.UseMiddleware<UnicornAntiResubmitMiddleware>();
                 app.UseMiddleware<UnicornRateLimitMiddleware>();
                 app.UseMiddleware<UnicornABListMiddleware>();
                 app.UseMiddleware<UnicornCacheMiddleware>();

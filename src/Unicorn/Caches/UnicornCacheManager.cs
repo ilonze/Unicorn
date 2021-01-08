@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,17 +66,18 @@ namespace Unicorn.Caches
             return dict;
         }
 
-        public async Task<bool> SetRateLimitDataAsync(string featureKey, string[] featureValues, TimeSpan expire, int limit)
+        public async Task<bool> SetRateLimitDataAsync(string featureKey, TimeSpan expiration, int limit)
         {
-            var timeKey = _options.CacheKeyPrefix + "ratelimit:times:" + featureKey;
-            var valueKey = _options.CacheKeyPrefix + "ratelimit:values:" + featureKey;
+            var timeKey = _options.CacheKeyPrefix + "ratelimit:" + featureKey;
             var cache = _options.UnicornDataUseDistributedCace && _options.IsShareRateLimit ? _distributedCache : _memoryCache;
             var data = await cache.GetAsync<List<long>>(timeKey) ?? new List<long>();
-            var result = data.Count < limit;
-            data = data.Where(r => DateTimeOffset.MinValue.AddTicks(r + BaseTime) < DateTimeOffset.Now.Add(-expire)).TakeLast(limit - 1).ToList();
-            data.Add(DateTimeOffset.Now.Ticks - BaseTime);
-            await cache.SetAsync(timeKey, data, DateTimeOffset.Now.Add(expire));
-            await cache.SetAsync(valueKey, featureValues, DateTimeOffset.MaxValue);
+            var result = data.Count <= limit;
+            if (result)
+            {
+                data = data.Where(r => DateTimeOffset.MinValue.AddTicks(r + BaseTime) < DateTimeOffset.Now.Add(-expiration)).TakeLast(limit - 1).ToList();
+                data.Add(DateTimeOffset.Now.Ticks - BaseTime);
+                await cache.SetAsync(timeKey, data, DateTimeOffset.Now.Add(expiration));
+            }
             return result;
         }
 
@@ -85,21 +87,30 @@ namespace Unicorn.Caches
             await cache.SetAsync(_options.CacheKeyPrefix + "loadbalance:" + serviceName + ":" + serviceId, data, DateTimeOffset.MaxValue);
         }
 
-        public async Task SetResponseDataAsync(string featureKey, byte[] data, Dictionary<string, string> headers, int seconds)
+        public async Task SetResponseDataAsync(string featureKey, byte[] body, Dictionary<string, StringValues> headers, TimeSpan expiration)
         {
-            await SetResponseDataAsync(featureKey, new ResponseData { Data = data, Headers = headers }, seconds);
+            await SetResponseDataAsync(featureKey, new ResponseData { Body = body, Headers = headers }, expiration);
         }
 
-        public async Task SetResponseDataAsync(string featureKey, ResponseData responseData, int seconds)
+        public async Task SetResponseDataAsync(string featureKey, ResponseData responseData, TimeSpan expiration)
         {
             var cache = _options.ResponseDataUseDistributedCace ? _distributedCache : _memoryCache;
-            await cache.SetAsync(_options.CacheKeyPrefix + "response:" + featureKey, responseData, DateTimeOffset.Now.AddSeconds(seconds));
+            await cache.SetAsync(_options.CacheKeyPrefix + "response:" + featureKey, responseData, DateTimeOffset.Now.Add(expiration));
         }
 
         public async Task<ResponseData> GetResponseDataAsync(string featureKey)
         {
             var cache = _options.ResponseDataUseDistributedCace ? _distributedCache : _memoryCache;
             return await cache.GetAsync<ResponseData>(_options.CacheKeyPrefix + "response:" + featureKey);
+        }
+
+        public async Task<bool> CheckAntiResubmitAsync(string featureKey, TimeSpan expiration)
+        {
+            var cache = _options.AntiResubmitDataUseDistributedCace ? _distributedCache : _memoryCache;
+            var key = _options.CacheKeyPrefix + "antiresubmit:" + featureKey;
+            var result = (await cache.GetAsync<string>(key)) != "1";
+            await cache.SetAsync(key, "1", DateTimeOffset.Now.Add(expiration));
+            return result;
         }
     }
 }

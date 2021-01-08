@@ -13,18 +13,22 @@ namespace Unicorn.Options
         /// <summary>
         /// Enables endpoint rate limiting based URL path and HTTP verb
         /// </summary>
-        public bool EnableRateLimiting { get; set; }
+        public bool IsEnabled { get; set; } = false;
 
         /// <summary>
         /// Rate limit period as in 1s, 1m, 1h
         /// </summary>
-        public string Period { get; set; }
+        public long Period { get; set; }
 
-        public double PeriodTimespan { get; set; }
+        public long PeriodTimespan { get; set; }
 
         /// <summary>
         /// Maximum number of requests that a client can make in a defined period
         /// </summary>
         public long Limit { get; set; }
+
+        public int QuotaExceededStatusCode { get; set; } = 429;
+
+        public string QuotaExceededMessage { get; set; } = "Gateway Quota Exceeded";
     }
 }

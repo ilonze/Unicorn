@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,9 +13,10 @@ namespace Unicorn.Caches
         //Task SetServicesAsync(IEnumerable<Service> services);
         Task<Dictionary<string, LoadBalanceData>> GetServicesLoadBalaceDataAsync(string serviceName, IEnumerable<string> serviceIds);
         Task SetServiceLoadBalaceDataAsync(string serviceName, string serviceId, LoadBalanceData data);
-        Task<bool> SetRateLimitDataAsync(string featureKey, string[] featureValues, TimeSpan expire, int limit);
-        Task SetResponseDataAsync(string featureKey, byte[] data, Dictionary<string, string> headers, int seconds);
-        Task SetResponseDataAsync(string featureKey, ResponseData responseData, int seconds);
+        Task<bool> SetRateLimitDataAsync(string featureKey, TimeSpan expiration, int limit);
+        Task SetResponseDataAsync(string featureKey, byte[] body, Dictionary<string, StringValues> headers, TimeSpan seconds);
+        Task SetResponseDataAsync(string featureKey, ResponseData responseData, TimeSpan seconds);
         Task<ResponseData> GetResponseDataAsync(string featureKey);
+        Task<bool> CheckAntiResubmitAsync(string featureKey, TimeSpan expiration);
     }
 }

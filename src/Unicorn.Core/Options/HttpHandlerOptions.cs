@@ -14,6 +14,8 @@ namespace Unicorn.Options
             MaxConnectionsPerServer = int.MaxValue;
         }
 
+        public bool IsEnabled { get; set; } = false;
+
         public bool AllowAutoRedirect { get; set; }
 
         public bool UseCookieContainer { get; set; }

@@ -7,5 +7,7 @@ namespace Unicorn.Options
 {
     public class SignOptions
     {
+        public bool IsEnabled { get; set; } = false;
+        public string ProviderName { get; set; }
     }
 }

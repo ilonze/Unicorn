@@ -39,6 +39,11 @@ namespace Unicorn.Middlewares
             //TODO:处理熔断 QoS
             //TODO:处理限流 Limit
             //TODO:黑白名单 AllowedList&BlockedList
+            //TODO:防重复提交
+            //TODO:请求防伪
+            //TODO:跨域
+            //TODO:格式转换
+            //TODO:服务健康检查
             var route = _unicornContext.RouteRule;
             var routeData = _unicornContext.RouteData;
             var dsRoutes = _unicornContext.DownstreamRoutes;

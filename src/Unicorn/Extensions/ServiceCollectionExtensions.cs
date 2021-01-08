@@ -15,11 +15,25 @@ namespace Unicorn.Extensions
     {
         public static IServiceCollection AddUnicorn(this IServiceCollection services, Action<UnicornOptions> optionsSetup = null)
         {
-            if (optionsSetup != null)
+            services.Configure<UnicornOptions>(options =>
             {
-                services.Configure(optionsSetup);
-            }
+                optionsSetup?.Invoke(options);
+                foreach (var routeRule in options.RouteRules)
+                {
+                    routeRule.ABListOptions ??= options.GlobalOptions.ABListOptions;
+                    routeRule.AggregateOptions ??= options.GlobalOptions.AggregateOptions;
+                    routeRule.AntiResubmitOptions ??= options.GlobalOptions.AntiResubmitOptions;
+                    routeRule.AuthenticationOptions ??= options.GlobalOptions.AuthenticationOptions;
+                    routeRule.CacheOptions ??= options.GlobalOptions.CacheOptions;
+                    routeRule.CorsOptions ??= options.GlobalOptions.CorsOptions;
+                    routeRule.HttpHandlerOptions ??= options.GlobalOptions.HttpHandlerOptions;
+                    routeRule.LoadBalancerOptions ??= options.GlobalOptions.LoadBalancerOptions;
+                    routeRule.QoSOptions ??= options.GlobalOptions.QoSOptions;
+                    routeRule.RateLimitRuleOptions ??= options.GlobalOptions.RateLimitRuleOptions;
+                }
+            });
             services.AddRouting();
+
             return services;
         }
 

@@ -7,9 +7,9 @@ using Unicorn.Options;
 
 namespace Unicorn.RateLimitProviders
 {
-    public class UserAgentRateLimitProvider : IRateLimitProvider
+    public class CookieRateLimitProvider : IRateLimitProvider
     {
-        public const string ProviderName = "UserAgent";
+        public const string ProviderName = "Cookie";
         public string Name => ProviderName;
 
         public Task<string> CreateKeyAsync(HttpContext context, UnicornContext unicornContext)
