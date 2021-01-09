@@ -7,13 +7,14 @@ using Unicorn.Options;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornAuthenticationMiddleware : UnicornMiddlewareBase<AuthenticationOptions>
+    public class UnicornResponseMiddleware: UnicornMiddlewareBase<ResponseOptions>
     {
-        public UnicornAuthenticationMiddleware(UnicornContext context)
-            : base(context.RouteRule.AuthenticationOptions, context)
+        public UnicornResponseMiddleware(UnicornContext context)
+            : base(context.RouteRule.ResponseOptions, context)
         {
 
         }
+
         public override Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             throw new NotImplementedException();

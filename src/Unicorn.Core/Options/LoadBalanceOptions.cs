@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Unicorn.Options
 {
-    public class LoadBalanceOptions
+    public class LoadBalanceOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
         public string Type { get; set; }

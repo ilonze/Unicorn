@@ -7,20 +7,17 @@ using Unicorn.Options;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornCorsMiddleware : IMiddleware
+    public class UnicornCorsMiddleware : UnicornMiddlewareBase<CorsOptions>
     {
-        protected CorsOptions Options { get; }
-        protected UnicornContext UnicornContext { get; }
         protected IUnicornCacheManager UnicornCacheManager { get; }
         public UnicornCorsMiddleware(
-            UnicornContext unicornContext,
+            UnicornContext context,
             IUnicornCacheManager unicornCacheManager)
+            : base(context.RouteRule.CorsOptions, context)
         {
-            Options = unicornContext.RouteRule.CorsOptions;
-            UnicornContext = unicornContext;
             UnicornCacheManager = unicornCacheManager;
         }
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (Options?.IsEnabled != true)
             {
@@ -40,8 +37,8 @@ namespace Unicorn.Middlewares
             if (Options.Origins.Contains(host) || Options.Origins.Contains("*"))
             {
                 responseData.Headers["Access-Control-Allow-Origin"] = Options.Origins.Contains("*") ? "*" : host;
-                responseData.Headers["Access-Control-Allow-Headers"] = string.Join(",", Options.Headers.ToArray());
-                responseData.Headers["Access-Control-Allow-Methods"] = string.Join(",", Options.Methods.ToArray());
+                responseData.Headers["Access-Control-Allow-Headers"] = Options.Headers;
+                responseData.Headers["Access-Control-Allow-Methods"] = Options.Methods;
                 responseData.Headers["Access-Control-Allow-Credentials"] = Options.Credentials.ToString().ToLower();
             }
         }

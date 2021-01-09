@@ -2,7 +2,7 @@
 
 namespace Unicorn.Options
 {
-    public class CorsOptions
+    public class CorsOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
         public StringValues Origins { get; set; } = "*";

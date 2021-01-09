@@ -13,5 +13,10 @@ namespace System
         {
             return Encoding.UTF8.GetBytes(str).Md5();
         }
+
+        public static string Hash(this string str)
+        {
+            return Encoding.UTF8.GetBytes(str).Hash();
+        }
     }
 }

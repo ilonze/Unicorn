@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Unicorn.Options
 {
-    public class AuthenticationOptions
+    public class AuthenticationOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
         public AuthenticationOptions()

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Unicorn.Options
 {
-    public class QoSOptions
+    public class QoSOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
 

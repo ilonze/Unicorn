@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Unicorn.Options
 {
-    public class SignOptions
+    public class SignOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
         public string ProviderName { get; set; }

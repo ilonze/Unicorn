@@ -20,6 +20,8 @@ namespace Unicorn.Extensions
                 optionsSetup?.Invoke(options);
                 foreach (var routeRule in options.RouteRules)
                 {
+                    routeRule.RequestOptions ??= options.GlobalOptions.RequestOptions;
+                    routeRule.ResponseOptions ??= options.GlobalOptions.ResponseOptions;
                     routeRule.ABListOptions ??= options.GlobalOptions.ABListOptions;
                     routeRule.AggregateOptions ??= options.GlobalOptions.AggregateOptions;
                     routeRule.AntiResubmitOptions ??= options.GlobalOptions.AntiResubmitOptions;
@@ -29,7 +31,9 @@ namespace Unicorn.Extensions
                     routeRule.HttpHandlerOptions ??= options.GlobalOptions.HttpHandlerOptions;
                     routeRule.LoadBalancerOptions ??= options.GlobalOptions.LoadBalancerOptions;
                     routeRule.QoSOptions ??= options.GlobalOptions.QoSOptions;
-                    routeRule.RateLimitRuleOptions ??= options.GlobalOptions.RateLimitRuleOptions;
+                    routeRule.RateLimitOptions ??= options.GlobalOptions.RateLimitOptions;
+                    routeRule.SignOptions ??= options.GlobalOptions.SignOptions;
+                    routeRule.EncryptOptions ??= options.GlobalOptions.EncryptOptions;
                 }
             });
             services.AddRouting();

@@ -12,7 +12,7 @@ using Unicorn.SignProviders;
 
 namespace Unicorn.Options
 {
-    public class UnicornOptions
+    public class UnicornOptions: IOptions
     {
         public bool IsMaster { get; set; }
         public bool UnicornDataUseDistributedCace { get; set; }

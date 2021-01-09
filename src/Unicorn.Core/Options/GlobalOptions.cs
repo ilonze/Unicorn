@@ -6,29 +6,23 @@ using System.Threading.Tasks;
 
 namespace Unicorn.Options
 {
-    public class GlobalOptions: DownstreamRoute
+    public class GlobalOptions: DownstreamRoute, IOptions
     {
-        public Dictionary<string, StringValues> AddHeadersToRequest { get; set; }
-        public Dictionary<string, StringValues> AddHeadersToRequestFromRoute { get; set; }
-        public Dictionary<string, StringValues> AddHeadersToResponse { get; set; }
-        public Dictionary<string, StringValues> AddHeadersToResponseFromRoute { get; set; }
-        public Dictionary<string, StringValues> AddQueriesToRequest { get; set; }
-        public Dictionary<string, StringValues> AddQueriesToRequestFromRoute { get; set; }
-        public Dictionary<string, StringValues> UpstreamHeaderTransform { get; set; }
-        public Dictionary<string, StringValues> DownstreamHeaderTransform { get; set; }
-        public Dictionary<int, int> HttpStatusCodeTransform { get; set; }
+        public RequestOptions RequestOptions { get; set; }
+        public ResponseOptions ResponseOptions { get; set; }
         public AggregateOptions AggregateOptions { get; set; }
         public QoSOptions QoSOptions { get; set; }
         public LoadBalanceOptions LoadBalancerOptions { get; set; }
-        public RateLimitRuleOptions RateLimitRuleOptions { get; set; }
+        public RateLimitOptions RateLimitOptions { get; set; }
         public AuthenticationOptions AuthenticationOptions { get; set; }
         public HttpHandlerOptions HttpHandlerOptions { get; set; }
         public ABListOptions ABListOptions { get; set; }
         public CacheOptions CacheOptions { get; set; }
         public AntiResubmitOptions AntiResubmitOptions { get; set; }
         public CorsOptions CorsOptions { get; set; }
-        public bool RouteIsCaseSensitive { get; set; }
+        public EncryptOptions EncryptOptions { get; set; }
+        public SignOptions SignOptions { get; set; }
+        public bool? RouteIsCaseSensitive { get; set; }
         public int Timeout { get; set; }
-        public string HeaderServer { get; set; }
     }
 }

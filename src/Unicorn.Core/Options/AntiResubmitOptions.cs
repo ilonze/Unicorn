@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Unicorn.Options
 {
-    public class AntiResubmitOptions
+    public class AntiResubmitOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
 

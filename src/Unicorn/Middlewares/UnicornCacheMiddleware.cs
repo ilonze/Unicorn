@@ -2,28 +2,29 @@
 using System;
 using System.Threading.Tasks;
 using Unicorn.Caches;
+using Unicorn.Extensions;
 using Unicorn.Options;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornCacheMiddleware : IMiddleware
+    public class UnicornCacheMiddleware : UnicornMiddlewareBase<CacheOptions>
     {
-        protected CacheOptions Options { get; }
-        protected UnicornContext UnicornContext { get; }
         protected IUnicornCacheManager UnicornCacheManager { get; }
-        public UnicornCacheMiddleware(UnicornContext unicornContext)
+        public UnicornCacheMiddleware(
+            UnicornContext context,
+            IUnicornCacheManager unicornCacheManager)
+            : base(context.RouteRule.CacheOptions, context)
         {
-            Options = unicornContext.RouteRule.CacheOptions;
-            UnicornContext = unicornContext;
+            UnicornCacheManager = unicornCacheManager;
         }
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (context.Request.Method == "GET")
             {
                 if (Options?.IsEnabled == true)
                 {
-                    var key = context.Request.Scheme + "://" + context.Request.Host.Value + context.Request.Path.Value + context.Request.QueryString.Value;
-                    var responseData = await UnicornCacheManager.GetResponseDataAsync(key.Md5());
+                    var key = context.GetRequestUrl().Hash();
+                    var responseData = await UnicornCacheManager.GetResponseDataAsync(key);
                     if (responseData != null)
                     {
                         UnicornContext.ResponseData = responseData;
@@ -35,7 +36,7 @@ namespace Unicorn.Middlewares
                         if (UnicornContext.ResponseData?.StatusCode == 200)
                         {
                             var seconds = Options.TtlSeconds;
-                            await UnicornCacheManager.SetResponseDataAsync(key.Md5(), UnicornContext.ResponseData, TimeSpan.FromSeconds(seconds));
+                            await UnicornCacheManager.SetResponseDataAsync(key, UnicornContext.ResponseData, TimeSpan.FromSeconds(seconds));
                         }
                     }
                 }

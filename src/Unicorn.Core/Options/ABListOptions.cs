@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Unicorn.Options
 {
-    public class ABListOptions
+    public class ABListOptions: IOptions
     {
         public bool IsEnabled { get; set; } = false;
 

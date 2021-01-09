@@ -42,7 +42,7 @@ namespace Unicorn.Extensions
                 app.UseMiddleware<UnicornDegradationMiddleware>();
                 app.UseMiddleware<UnicornLoadBalanceMiddleware>();
                 app.UseMiddleware<UnicornAggregateMiddleware>();
-                app.UseMiddleware<UnicornHeaderMiddleware>();
+                app.UseMiddleware<UnicornRequestMiddleware>();
             });
 
             return app;

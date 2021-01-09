@@ -20,5 +20,12 @@ namespace System
             }
             return pwd;
         }
+
+        public static string Hash(this byte[] bytes)
+        {
+            var sha = new SHA256Managed();
+            byte[] checksum = sha.ComputeHash(bytes);
+            return BitConverter.ToString(checksum).Replace("-", String.Empty);
+        }
     }
 }

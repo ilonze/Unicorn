@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Unicorn.Options
 {
-    public class HttpHandlerOptions
+    public class HttpHandlerOptions : IOptions
     {
         public HttpHandlerOptions()
         {

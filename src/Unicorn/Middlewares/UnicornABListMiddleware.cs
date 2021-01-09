@@ -11,16 +11,13 @@ using Unicorn.Options;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornABListMiddleware : IMiddleware
+    public class UnicornABListMiddleware : UnicornMiddlewareBase<ABListOptions>
     {
-        protected ABListOptions Options { get; }
-        protected UnicornContext UnicornContext { get; }
-        public UnicornABListMiddleware(UnicornContext unicornContext)
+        public UnicornABListMiddleware(UnicornContext context)
+            :base(context.RouteRule.ABListOptions, context)
         {
-            Options = unicornContext.RouteRule.ABListOptions;
-            UnicornContext = unicornContext;
         }
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (Options?.IsEnabled == true)
             {
@@ -130,7 +127,7 @@ namespace Unicorn.Middlewares
 
         protected virtual bool MatchUserAgents(HttpContext context, StringValues userAgents)
         {
-            var ua = context.Request.Headers["UserAgent"].ToString();
+            var ua = context.Request.Headers["User-Agent"].ToString();
             foreach (var userAgent in userAgents)
             {
                 try

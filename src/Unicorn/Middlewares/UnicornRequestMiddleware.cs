@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Unicorn.Options;
+
+namespace Unicorn.Middlewares
+{
+    public class UnicornRequestMiddleware : UnicornMiddlewareBase<RequestOptions>
+    {
+        public UnicornRequestMiddleware(
+            UnicornContext context)
+            : base(context.RouteRule.RequestOptions, context)
+        {
+        }
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

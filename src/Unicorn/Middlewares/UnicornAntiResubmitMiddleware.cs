@@ -9,30 +9,27 @@ using Unicorn.Options;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornAntiResubmitMiddleware : IMiddleware
+    public class UnicornAntiResubmitMiddleware : UnicornMiddlewareBase<AntiResubmitOptions>
     {
-        protected AntiResubmitOptions Options { get; }
-        protected UnicornContext UnicornContext { get; }
         protected IUnicornCacheManager UnicornCacheManager { get; }
         public UnicornAntiResubmitMiddleware(
-            UnicornContext unicornContext,
+            UnicornContext context,
             IUnicornCacheManager unicornCacheManager)
+            : base(context.RouteRule.AntiResubmitOptions, context)
         {
-            Options = unicornContext.RouteRule.AntiResubmitOptions;
-            UnicornContext = unicornContext;
             UnicornCacheManager = unicornCacheManager;
         }
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (Options?.IsEnabled != true)
             {
                 await next(context);
                 return;
             }
-            var ipBytes = context.Connection.RemoteIpAddress.GetAddressBytes();
+            var ipBytes = Encoding.UTF8.GetBytes(context.GetClientIp());
             var pathBytes = Encoding.UTF8.GetBytes(context.GetRequestUrl());
             var bodyBytes = UnicornContext.RequestData.Body;
-            var key = ipBytes.Union(pathBytes).Union(bodyBytes).ToArray().Md5();
+            var key = ipBytes.Union(pathBytes).Union(bodyBytes).ToArray().Hash();
             var milliseconds = Options.Period;
             var result = await UnicornCacheManager.CheckAntiResubmitAsync(
                 key,

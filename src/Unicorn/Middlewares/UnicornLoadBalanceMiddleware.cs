@@ -3,12 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unicorn.Options;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornLoadBalanceMiddleware : IMiddleware
+    public class UnicornLoadBalanceMiddleware : UnicornMiddlewareBase<LoadBalanceOptions>
     {
-        public Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public UnicornLoadBalanceMiddleware(UnicornContext context)
+            : base(context.RouteRule.LoadBalancerOptions, context)
+        {
+
+        }
+        public override Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             throw new NotImplementedException();
         }

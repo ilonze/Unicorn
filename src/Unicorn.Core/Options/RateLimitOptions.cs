@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Unicorn.Options
 {
-    public class RateLimitRuleOptions
+    public class RateLimitOptions : IOptions
     {
         public List<string> IPAllowedList { get; set; } = new List<string>();
 

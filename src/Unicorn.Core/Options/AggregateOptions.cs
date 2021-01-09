@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Unicorn.Options
 {
-    public class AggregateOptions
+    public class AggregateOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
         public string AggregateProvider { get; set; }

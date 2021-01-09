@@ -13,25 +13,22 @@ using RouteData = Microsoft.AspNetCore.Routing.RouteValueDictionary;
 
 namespace Unicorn.Middlewares
 {
-    public class UnicornMiddleware : IMiddleware
+    public class UnicornMiddleware : UnicornMiddlewareBase<UnicornOptions>
     {
-        private readonly UnicornOptions _options;
-        private readonly IRouteHandler _routeHandler;
-        private readonly UnicornContext _unicornContext;
-        private readonly IServiceHandler _serviceHandler;
-        private readonly IAggregateProvider _aggregateProvider;
+        protected IRouteHandler RouteHandler { get; }
+        protected IServiceHandler _serviceHandler { get; }
+        protected IAggregateProvider _aggregateProvider { get; }
         public UnicornMiddleware(
             IOptions<UnicornOptions> options,
             IRouteHandler routeHandler,
-            UnicornContext unicornContext,
+            UnicornContext context,
             IServiceHandler serviceHandler)
+            : base(options.Value, context)
         {
-            _options = options.Value;
-            _routeHandler = routeHandler;
-            _unicornContext = unicornContext;
+            RouteHandler = routeHandler;
             _serviceHandler = serviceHandler;
         }
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             //TODO:请求加签验签 Sign
             //TODO:服务降级升级 
@@ -44,16 +41,16 @@ namespace Unicorn.Middlewares
             //TODO:跨域
             //TODO:格式转换
             //TODO:服务健康检查
-            var route = _unicornContext.RouteRule;
-            var routeData = _unicornContext.RouteData;
-            var dsRoutes = _unicornContext.DownstreamRoutes;
+            var route = UnicornContext.RouteRule;
+            var routeData = UnicornContext.RouteData;
+            var dsRoutes = UnicornContext.DownstreamRoutes;
             var tasks = new Task<HttpResponseMessage>[dsRoutes.Length];
             for (int i = 0; i < dsRoutes.Length; i++)
             {
                 tasks[i] = HandleDownstreamAsync(context, dsRoutes[i], route, routeData);
             }
             Task.WaitAll(tasks);
-            HttpResponseMessage responseMessage = null;
+            HttpResponseMessage responseMessage;
             if (dsRoutes.Length > 1)
             {
                 var responseMessages = new Dictionary<string, HttpResponseMessage>();

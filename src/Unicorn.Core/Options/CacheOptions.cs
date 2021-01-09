@@ -1,6 +1,6 @@
 ﻿namespace Unicorn.Options
 {
-    public class CacheOptions
+    public class CacheOptions : IOptions
     {
         public bool IsEnabled { get; set; } = false;
 
