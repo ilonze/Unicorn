@@ -10,6 +10,7 @@ namespace Unicorn
         public string DownstreamServiceName { get; set; }
         public string DownstreamSchema { get; set; }
         public string DownstreamHttpMethod { get; set; }
+
         public static implicit operator DownstreamFactor(DownstreamRoute dsRoute)
         {
             return new DownstreamFactor

@@ -35,7 +35,7 @@ namespace Unicorn.Serializers.Newtonsoft
             JsonReader reader,
             Type objectType,
             object existingValue,
-            NewtonsoftJsonSerializer serializer)
+            JsonSerializer serializer)
         {
             var date = base.ReadJson(reader, objectType, existingValue, serializer) as DateTime?;
 
@@ -50,7 +50,7 @@ namespace Unicorn.Serializers.Newtonsoft
         public override void WriteJson(
             JsonWriter writer,
             object value,
-            NewtonsoftJsonSerializer serializer)
+            JsonSerializer serializer)
         {
             var date = value as DateTime?;
             base.WriteJson(writer, date.HasValue ? _clock.Normalize(date.Value) : value, serializer);

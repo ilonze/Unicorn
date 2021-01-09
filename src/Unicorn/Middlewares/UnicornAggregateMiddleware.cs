@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unicorn.Datas;
 using Unicorn.Options;
 
 namespace Unicorn.Middlewares
@@ -13,9 +14,15 @@ namespace Unicorn.Middlewares
             : base(context.RouteRule.AggregateOptions, context)
         {
         }
-        public override Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            throw new NotImplementedException();
+            if (Options?.IsEnabled == true)
+            {
+                await next(context);
+                return;
+            }
+
+
         }
     }
 }

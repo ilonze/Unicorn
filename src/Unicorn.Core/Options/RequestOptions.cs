@@ -19,9 +19,11 @@ namespace Unicorn.Options
         public Dictionary<string, string> AddQueriesFromRoute { get; set; }
         public Dictionary<string, string> AddQueriesFromForms { get; set; }
         public Dictionary<string, string> AddQueriesFromHeaders { get; set; }
+        public Dictionary<string, string> QueryTransform { get; set; }
         public Dictionary<string, StringValues> AddForms { get; set; }
         public Dictionary<string, string> AddFormsFromRoute { get; set; }
         public Dictionary<string, string> AddFormsFromHeaders { get; set; }
         public Dictionary<string, string> AddFormsFromQueries { get; set; }
+        public Dictionary<string, string> FormTransform { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unicorn.Datas;
 using Unicorn.Handlers;
 using Unicorn.Options;
 
@@ -45,14 +46,29 @@ namespace Unicorn.Extensions
                 var unicornContext = context.RequestServices.GetRequiredService<UnicornContext>();
                 unicornContext.RouteRule = route;
                 unicornContext.RouteData = routeData;
-                unicornContext.DownstreamRoutes = route.DownstreamRoutes.SelectMany(r => r.DownstreamFactors.Select(f => new DownstreamRoute
+                var list = new List<DownstreamRoute>();
+                foreach (var dsRoute in route.DownstreamRoutes)
                 {
-                    DownstreamHttpMethod = f.HttpMethod,
-                    DownstreamRouteTemplate = r.DownstreamRouteTemplate,
-                    DownstreamSchema = f.Schema,
-                    DownstreamServiceName = f.ServiceName,
-                    DownstreamServiceNamespace = f.ServiceNamespace
-                })).ToArray();
+                    if (dsRoute.DownstreamFactors == null || dsRoute.DownstreamFactors.Count == 0)
+                    {
+                        list.Add(dsRoute);
+                    }
+                    else
+                    {
+                        foreach (var dsFactor in dsRoute.DownstreamFactors)
+                        {
+                            list.Add(new DownstreamRoute
+                            {
+                                DownstreamHttpMethod = dsFactor.HttpMethod,
+                                DownstreamRouteTemplate = dsRoute.DownstreamRouteTemplate,
+                                DownstreamSchema = dsFactor.Schema,
+                                DownstreamServiceName = dsFactor.ServiceName,
+                                DownstreamServiceNamespace = dsFactor.ServiceNamespace
+                            });
+                        }
+                    }
+                }
+                unicornContext.DownstreamRoutes = list.ToArray();
             }
             return route != null;
         }

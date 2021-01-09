@@ -11,7 +11,7 @@ namespace Unicorn.Options
     {
         public bool IsEnabled { get; set; }
         public Dictionary<string, StringValues> AddHeaders { get; set; }
-        public Dictionary<string, string> AddHeadersFromRoute { get; set; }
+        public Dictionary<string, string> AddHeadersFromRoutes { get; set; }
         public Dictionary<string, string> AddHeadersFromForms { get; set; }
         public Dictionary<string, string> AddHeadersFromQueries { get; set; }
         public Dictionary<string, string> HeaderTransform { get; set; }

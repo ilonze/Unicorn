@@ -43,6 +43,7 @@ namespace Unicorn.Extensions
                 app.UseMiddleware<UnicornLoadBalanceMiddleware>();
                 app.UseMiddleware<UnicornAggregateMiddleware>();
                 app.UseMiddleware<UnicornRequestMiddleware>();
+                app.UseMiddleware<UnicornResponseMiddleware>();
             });
 
             return app;

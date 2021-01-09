@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Unicorn.Caching;
 using Unicorn.Serializers;
+using Unicorn.Serializers.Newtonsoft;
 
 namespace Unicorn.Extensions
 {
@@ -10,7 +11,7 @@ namespace Unicorn.Extensions
     {
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
-            services.TryAddTransient<IJsonSerializer, JsonSerializer>();
+            services.TryAddTransient<IJsonSerializer, NewtonsoftJsonSerializer>();
             services.TryAddTransient<IDistributedCacheSerializer, DistributedCacheSerializer>();
             services.TryAddSingleton(typeof(IUnicornCacheProvider), typeof(MemoryUnicornCacheProvider));
             services.TryAddSingleton(typeof(IUnicornCacheProvider), typeof(DistributedUnicornCacheProvider));

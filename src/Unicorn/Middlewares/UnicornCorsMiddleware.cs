@@ -2,7 +2,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Unicorn.Caches;
+using Unicorn.Datas;
+using Unicorn.Managers.Caches;
 using Unicorn.Options;
 
 namespace Unicorn.Middlewares

@@ -3,8 +3,9 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Unicorn.Caches;
+using Unicorn.Datas;
 using Unicorn.Extensions;
+using Unicorn.Managers.Caches;
 using Unicorn.Options;
 
 namespace Unicorn.Middlewares
@@ -26,8 +27,8 @@ namespace Unicorn.Middlewares
                 await next(context);
                 return;
             }
-            var ipBytes = Encoding.UTF8.GetBytes(context.GetClientIp());
-            var pathBytes = Encoding.UTF8.GetBytes(context.GetRequestUrl());
+            var ipBytes = Encoding.UTF8.GetBytes(UnicornContext.RequestData.ClientIp);
+            var pathBytes = Encoding.UTF8.GetBytes(UnicornContext.RequestData.Url);
             var bodyBytes = UnicornContext.RequestData.Body;
             var key = ipBytes.Union(pathBytes).Union(bodyBytes).ToArray().Hash();
             var milliseconds = Options.Period;

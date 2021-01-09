@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Unicorn.Caches;
+using Unicorn.Datas;
+using Unicorn.Extensions;
 using Unicorn.Options;
 
 namespace Unicorn.Middlewares
@@ -80,7 +81,7 @@ namespace Unicorn.Middlewares
 
         protected virtual bool MatchIPs(HttpContext context, StringValues ips)
         {
-            var userIp = context.Connection.RemoteIpAddress.ToString();
+            var userIp = context.GetClientIp().Split(',').FirstOrDefault()?.Trim();
             if (userIp.Contains(":"))
             {
                 foreach (var ip in ips)

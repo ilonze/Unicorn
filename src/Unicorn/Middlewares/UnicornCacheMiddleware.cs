@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
-using Unicorn.Caches;
+using Unicorn.Datas;
 using Unicorn.Extensions;
+using Unicorn.Managers.Caches;
 using Unicorn.Options;
 
 namespace Unicorn.Middlewares

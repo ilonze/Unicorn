@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Unicorn.AggregateProviders;
-using Unicorn.DataFormatConverters;
-using Unicorn.EncryptProviders;
-using Unicorn.FileProviders;
-using Unicorn.LoadBalanceProviders;
-using Unicorn.RateLimitProviders;
+using Unicorn.Providers.Aggregates;
+using Unicorn.Providers.DataFormats;
+using Unicorn.Providers.Encrypts;
+using Unicorn.Providers.Files;
+using Unicorn.Providers.LoadBalances;
+using Unicorn.Providers.RateLimits;
+using Unicorn.Providers.Signs;
 using Unicorn.Serializers;
-using Unicorn.SignProviders;
 
 namespace Unicorn.Options
 {
@@ -32,40 +33,43 @@ namespace Unicorn.Options
         public Dictionary<string, Type> SignProviders { get; set; } = new Dictionary<string, Type>();
         public Dictionary<string, Type> EncryptProviders { get; set; } = new Dictionary<string, Type>();
         public Dictionary<string, Type> DataFormatProviders { get; set; } = new Dictionary<string, Type>();
-        public Dictionary<string, Type> JsonSerializers { get; set; } = new Dictionary<string, Type>();
 
 
-        public void AddAggregateProvider<T>(string name) where T: IAggregateProvider
+        public void AddAggregateProvider<T>() where T: IAggregateProvider
         {
-            AggregateProviders[name] = typeof(T);
+            AddProvider<T>(AggregateProviders);
         }
-        public void AddLoadBalanceProvider<T>(string name) where T: ILoadBalanceProvider
+        public void AddLoadBalanceProvider<T>() where T: ILoadBalanceProvider
         {
-            LoadBalanceProviders[name] = typeof(T);
+            AddProvider<T>(LoadBalanceProviders);
         }
-        public void AddRateLimitProvider<T>(string name) where T: IRateLimitProvider
+        public void AddRateLimitProvider<T>() where T: IRateLimitProvider
         {
-            RateLimitProviders[name] = typeof(T);
+            AddProvider<T>(RateLimitProviders);
         }
-        public void AddFileProvider<T>(string name) where T: IFileProvider
+        public void AddFileProvider<T>() where T: IFileProvider
         {
-            FileProviders[name] = typeof(T);
+            AddProvider<T>(FileProviders);
         }
-        public void AddSignProvider<T>(string name) where T: ISignProvider
+        public void AddSignProvider<T>() where T: ISignProvider
         {
-            SignProviders[name] = typeof(T);
+            AddProvider<T>(SignProviders);
         }
-        public void AddEncryptProvider<T>(string name) where T : IEncryptProvider
+        public void AddEncryptProvider<T>() where T : IEncryptProvider
         {
-            EncryptProviders[name] = typeof(T);
+            AddProvider<T>(EncryptProviders);
         }
-        public void AddDataFormatProvider<T>(string name) where T : IDataFormatProvider
+        public void AddDataFormatProvider<T>() where T : IDataFormatProvider
         {
-            DataFormatProviders[name] = typeof(T);
+            AddProvider<T>(DataFormatProviders);
         }
-        public void AddJsonSerializer<T>(string name) where T : IJsonSerializer
+
+        private void AddProvider<T>(Dictionary<string, Type> providers)
+            where T: IProvider
         {
-            JsonSerializers[name] = typeof(T);
+            var type = typeof(T);
+            var name = type.GetCustomAttributes(false).OfType<ProviderNameAttribute>().FirstOrDefault()?.Name;
+            providers[name] = type;
         }
     }
 }
