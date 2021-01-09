@@ -56,7 +56,8 @@ namespace Unicorn.Middlewares
                 Protocol = request.Protocol,
                 Query = request.Query.ToDictionary(r => r.Key, r => r.Value),
                 Scheme = request.Scheme,
-                Url = context.GetRequestUrl()
+                Url = context.GetRequestUrl(),
+                HttpContext = context,
             };
             if (request.Method == "POST"
                 || request.Method == "PUT")
@@ -80,6 +81,7 @@ namespace Unicorn.Middlewares
 
             var response = context.Response;
             var responseData = UnicornContext.ResponseData;
+            responseData.HttpContext = context;
             response.StatusCode = responseData.StatusCode;
             //https://www.cnblogs.com/sky-net/p/9284696.html
             foreach (var header in responseData.Headers)

@@ -9,19 +9,25 @@ using Unicorn.Datas;
 namespace Unicorn.Providers.DataFormats
 {
     [ProviderName(ProviderName)]
-    public class JsonToYamlDataFormatProvider: IDataFormatProvider
+    public class BytesToBase64DataFormatProvider : IDataFormatProvider
     {
-        public const string ProviderName = "JsonToYaml";
+        public const string ProviderName = "BytesToBase64";
         public string Name => ProviderName;
 
         public Task<ResponseData> ConvertAsync(ResponseData data, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            data.BodyString = Convert.ToBase64String(data.Body);
+            data.Body = null;
+            data.Headers["Content-Type"] = "text/plain";
+            return Task.FromResult(data);
         }
 
         public Task<RequestData> ConvertAsync(RequestData data, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            data.Text = Convert.ToBase64String(data.Body);
+            data.Body = null;
+            data.Headers["Content-Type"] = "text/plain";
+            return Task.FromResult(data);
         }
     }
 }

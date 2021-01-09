@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Unicorn.Datas
         public Dictionary<string, StringValues> Headers { get; set; }
         public int StatusCode { get; set; } = 200;
         public string StatusMessage { get; set; } = "OK";
+        public HttpContext HttpContext { get; set; }
     }
 }

@@ -34,5 +34,6 @@ namespace Unicorn.Datas
         public string Origin { get; set; }
         public string Url { get; set; }
         public string ClientIp { get; set; }
+        public HttpContext HttpContext { get; set; }
     }
 }

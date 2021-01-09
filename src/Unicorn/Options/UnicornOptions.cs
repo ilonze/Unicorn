@@ -64,7 +64,7 @@ namespace Unicorn.Options
             AddProvider<T>(DataFormatProviders);
         }
 
-        private void AddProvider<T>(Dictionary<string, Type> providers)
+        private static void AddProvider<T>(Dictionary<string, Type> providers)
             where T: IProvider
         {
             var type = typeof(T);

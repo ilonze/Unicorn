@@ -84,7 +84,8 @@ namespace Unicorn.Extensions
 
         public static IServiceCollection AddDataFormatProviders(this IServiceCollection services)
         {
-            services.AddScoped<ByteToBase64DataFormatProvider>();
+            services.AddScoped<Base64ToBytesDataFormatProvider>();
+            services.AddScoped<BytesToBase64DataFormatProvider>();
             services.AddScoped<JsonpToJsonDataFormatProvider>();
             services.AddScoped<JsonToJsonpDataFormatProvider>();
             services.AddScoped<JsonToXmlDataFormatProvider>();
@@ -96,7 +97,8 @@ namespace Unicorn.Extensions
 
             services.Configure<UnicornOptions>(options =>
             {
-                options.AddDataFormatProvider<ByteToBase64DataFormatProvider>();
+                options.AddDataFormatProvider<Base64ToBytesDataFormatProvider>();
+                options.AddDataFormatProvider<BytesToBase64DataFormatProvider>();
                 options.AddDataFormatProvider<JsonpToJsonDataFormatProvider>();
                 options.AddDataFormatProvider<JsonToJsonpDataFormatProvider>();
                 options.AddDataFormatProvider<JsonToXmlDataFormatProvider>();
