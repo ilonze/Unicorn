@@ -76,6 +76,25 @@ namespace Unicorn.Middlewares
                 }
             }
 
+            await next(context);
+
+            var response = context.Response;
+            var responseData = UnicornContext.ResponseData;
+            response.StatusCode = responseData.StatusCode;
+            //https://www.cnblogs.com/sky-net/p/9284696.html
+            foreach (var header in responseData.Headers)
+            {
+                response.Headers[header.Key] = header.Value;
+            }
+            if (responseData.Body != null && responseData.Body.Length > 0)
+            {
+                await response.Body.WriteAsync(responseData.Body);
+            }
+            else if (!string.IsNullOrEmpty(responseData.BodyString))
+            {
+                await response.WriteAsync(responseData.BodyString);
+            }
+
             //TODO:请求加签验签 Sign
             //TODO:服务降级升级 
             //TODO:请求加密解密 Encrypt
@@ -88,52 +107,6 @@ namespace Unicorn.Middlewares
             //TODO:格式转换
             //TODO:服务健康检查
             //TODO:开放接口文档
-            var route = UnicornContext.RouteRule;
-            var routeData = UnicornContext.RouteData;
-            var dsRoutes = UnicornContext.DownstreamRoutes;
-            var tasks = new Task<HttpResponseMessage>[dsRoutes.Length];
-            for (int i = 0; i < dsRoutes.Length; i++)
-            {
-                tasks[i] = HandleDownstreamAsync(context, dsRoutes[i], route, routeData);
-            }
-            Task.WaitAll(tasks);
-            HttpResponseMessage responseMessage;
-            if (dsRoutes.Length > 1)
-            {
-                var responseMessages = new Dictionary<string, HttpResponseMessage>();
-                for (int i = 0; i < dsRoutes.Length; i++)
-                {
-                    responseMessages[dsRoutes[i].DownstreamServiceName] = tasks[i].Result;
-                }
-
-                responseMessage = await AggregateProvider.AggregateAsync(responseMessages, route.AggregateOptions);
-            }
-            else if (dsRoutes.Length == 1)
-            {
-                responseMessage = tasks[0].Result;
-            }
-            else
-            {
-                await next(context);
-                return;
-            }
-            await WriteResponseAsync(context, responseMessage);
-        }
-
-        private async Task<HttpResponseMessage> HandleDownstreamAsync(HttpContext context, DownstreamRoute dsRoute, RouteRule routeRule, RouteData routeData)
-        {
-            await Task.CompletedTask;
-            return null;
-        }
-
-        private static async Task WriteResponseAsync(HttpContext context, HttpResponseMessage message)
-        {
-            var headers = message.Content.Headers.Select(r => r);
-            foreach (var header in headers)
-            {
-                context.Response.Headers.Add(header.Key, header.Value.ToArray());
-            }
-            await message.Content.CopyToAsync(context.Response.Body);
         }
     }
 }

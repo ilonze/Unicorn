@@ -56,6 +56,8 @@ namespace Unicorn.Middlewares
             {
                 request.Headers["X-Forwarded-For"] = new[] { request.Headers["X-Real-IP"].ToString(), fromIp };
             }
+            //TODO:发起下游网络请求
+
             await next(context);
         }
 

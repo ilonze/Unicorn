@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Primitives;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Unicorn.Datas;
 using Unicorn.Options;
 
 namespace Unicorn.Providers.Aggregates
@@ -13,7 +16,7 @@ namespace Unicorn.Providers.Aggregates
         public const string ProviderName = "Byte";
         public string Name => ProviderName;
 
-        public async Task<HttpResponseMessage> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
+        public async Task<ResponseData> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
         {
             List<byte> bytes = new List<byte>();
 
@@ -22,9 +25,10 @@ namespace Unicorn.Providers.Aggregates
                 var ds = await message.Value.Content.ReadAsByteArrayAsync(token);
                 bytes.AddRange(ds);
             }
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            
+            var result = new ResponseData
             {
-                Content = new ByteArrayContent(bytes.ToArray())
+                Body = bytes.ToArray(),
             };
             await DefaultAggregateProvider.ParseHeaders(messages, result, token);
             return result;

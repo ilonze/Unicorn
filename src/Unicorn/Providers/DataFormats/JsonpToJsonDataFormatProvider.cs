@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Unicorn.Datas;
 
 namespace Unicorn.Providers.DataFormats
 {
@@ -11,7 +12,7 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "JsonpToJson";
         public string Name => ProviderName;
 
-        public Task<HttpContent> ConvertAsync(HttpContent content, CancellationToken token = default)
+        public Task<ResponseData> ConvertAsync(ResponseData content, CancellationToken token = default)
         {
             throw new NotImplementedException();
         }

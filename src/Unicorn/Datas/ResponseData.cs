@@ -10,7 +10,7 @@ namespace Unicorn.Datas
     {
         public byte[] Body { get; set; }
         public string BodyString { get; set; }
-        public Dictionary<string, StringValues> Headers { get; set; } = new Dictionary<string, StringValues>();
+        public Dictionary<string, StringValues> Headers { get; set; }
         public int StatusCode { get; set; } = 200;
         public string StatusMessage { get; set; } = "OK";
     }

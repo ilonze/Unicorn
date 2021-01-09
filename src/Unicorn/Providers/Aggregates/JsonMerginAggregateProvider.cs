@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unicorn.Serializers;
 using Unicorn.Options;
+using Unicorn.Datas;
 
 namespace Unicorn.Providers.Aggregates
 {
@@ -21,7 +22,7 @@ namespace Unicorn.Providers.Aggregates
         public const string ProviderName = "JsonMergin";
         public string Name => ProviderName;
 
-        public async Task<HttpResponseMessage> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
+        public async Task<ResponseData> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
         {
             var data = JObject.FromObject(new { });
 
@@ -31,9 +32,9 @@ namespace Unicorn.Providers.Aggregates
                 data.Merge(_jsonSerializer.Deserialize<JObject>(json));
             }
             var jsonString = _jsonSerializer.Serialize(data);
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            var result = new ResponseData
             {
-                Content = new StringContent(jsonString, Encoding.UTF8, "application/json")
+                BodyString = jsonString
             };
             await DefaultAggregateProvider.ParseHeaders(messages, result, token);
             return result;

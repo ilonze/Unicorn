@@ -32,6 +32,17 @@ namespace Unicorn.Middlewares
                 {
                     response.Headers["Server"] = Options.ServerHeader;
                 }
+                else
+                {
+                    response.Headers["Server"] = "Unicorn";
+                }
+                var list = new List<string>();
+                if (response.Headers.ContainsKey("X-Power-By"))
+                {
+                    list.AddRange(response.Headers["X-Power-By"]);
+                }
+                list.Add("Unicorn");
+                response.Headers["X-Power-By"] = list.ToArray();
             }
             await next(context);
         }

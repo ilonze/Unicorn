@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unicorn.Serializers;
 using Unicorn.Options;
+using Unicorn.Datas;
 
 namespace Unicorn.Providers.Aggregates
 {
@@ -23,14 +24,14 @@ namespace Unicorn.Providers.Aggregates
         public const string ProviderName = "Default";
         public string Name => ProviderName;
 
-        public async Task<HttpResponseMessage> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
+        public async Task<ResponseData> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
         {
             var keys = messages.ToDictionary(r => r.Key, r => aggregateOptions.AggregateKeys.ContainsKey(r.Key) ? aggregateOptions.AggregateKeys[r.Key] : r.Key);
             var datas = messages.ToDictionary(r => keys[r.Key], async r => await ParseData(r.Value, token));
             var json = _jsonSerializer.Serialize(datas);
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            var result = new ResponseData
             {
-                Content = new StringContent(json, Encoding.UTF8, "application/json")
+                BodyString = json
             };
             await ParseHeaders(messages, result, token);
             return result;
@@ -55,22 +56,21 @@ namespace Unicorn.Providers.Aggregates
             }
         }
 
-        internal static async Task ParseHeaders(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, HttpResponseMessage responseMessage, CancellationToken token = default)
+        internal static async Task ParseHeaders(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, ResponseData responseData, CancellationToken token = default)
         {
-            var headers = responseMessage.Headers;
+            var headers = responseData.Headers;
             foreach (var message in messages)
             {
                 foreach (var keyValue in message.Value.Content.Headers)
                 {
-                    if (headers.Contains(keyValue.Key))
+                    if (headers.ContainsKey(keyValue.Key))
                     {
-                        var oldValues = headers.GetValues(keyValue.Key);
-                        headers.Remove(keyValue.Key);
-                        headers.Add(keyValue.Key, keyValue.Value.Union(oldValues).Distinct());
+                        var oldValues = headers[keyValue.Key];
+                        headers[keyValue.Key] = keyValue.Value.Union(oldValues).Distinct().ToArray();
                     }
                     else
                     {
-                        headers.Add(keyValue.Key, keyValue.Value);
+                        headers[keyValue.Key] = keyValue.Value.ToArray();
                     }
                 }
             }
