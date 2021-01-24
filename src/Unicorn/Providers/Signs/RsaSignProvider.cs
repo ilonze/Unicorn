@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Unicorn.Datas;
 using Unicorn.Options;
 
 namespace Unicorn.Providers.Signs
@@ -15,13 +16,15 @@ namespace Unicorn.Providers.Signs
         public const string ProviderName = "Rsa";
         public string Name => ProviderName;
 
-        public Task<HttpContent> Sign(HttpContent content, SignOptions options, CancellationToken token = default)
+        public Task SignAsync(UnicornContext context, SignOptions options, CancellationToken token = default)
         {
+            //TODO:NotImplemented
             throw new NotImplementedException();
         }
 
-        public Task<bool> Verify(HttpContext content, SignOptions options, CancellationToken token = default)
+        public Task<bool> VerifyAsync(UnicornContext context, SignOptions options, CancellationToken token = default)
         {
+            //TODO:NotImplemented
             throw new NotImplementedException();
         }
     }

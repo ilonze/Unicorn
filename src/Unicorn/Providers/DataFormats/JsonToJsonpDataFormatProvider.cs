@@ -14,19 +14,19 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "JsonToJsonp";
         public string Name => ProviderName;
 
-        public Task<ResponseData> ConvertAsync(ResponseData data, CancellationToken token = default)
+        public Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default)
         {
             var callback = "callback";
-            if (data.HttpContext.Request.Query.ContainsKey(callback))
+            if (context.HttpContext.Request.Query.ContainsKey(callback))
             {
-                callback = data.HttpContext.Request.Query[nameof(callback)];
+                callback = context.HttpContext.Request.Query[nameof(callback)];
             }
             data.BodyString = callback + "(" + data.BodyString + ")";
-            data.Headers["Content-Type"] = "text/javascript";
+            data.ContentType = "text/javascript";
             return Task.FromResult(data);
         }
 
-        public Task<RequestData> ConvertAsync(RequestData data, CancellationToken token = default)
+        public Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default)
         {
             return Task.FromResult(data);
         }

@@ -12,7 +12,7 @@ namespace Unicorn.Middlewares
     public class UnicornDegradationMiddleware : UnicornMiddlewareBase<UnicornOptions>
     {
         public UnicornDegradationMiddleware(UnicornContext context, IOptions<UnicornOptions> options)
-            :base(options.Value, context)
+            :base(options.Value, context, options)
         {
 
         }

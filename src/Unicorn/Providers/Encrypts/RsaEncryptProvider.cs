@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Unicorn.Datas;
+using Unicorn.Options;
 
 namespace Unicorn.Providers.Encrypts
 {
@@ -12,12 +14,12 @@ namespace Unicorn.Providers.Encrypts
         public const string ProviderName = "Rsa";
         public string Name => ProviderName;
 
-        public Task<byte[]> DecryptAsync(byte[] data, CancellationToken token = default)
+        public Task<bool> DecryptAsync(UnicornContext context, EncryptOptions options, CancellationToken token = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<byte[]> EncryptAsync(byte[] data, CancellationToken token = default)
+        public Task EncryptAsync(UnicornContext context, EncryptOptions options, CancellationToken token = default)
         {
             throw new NotImplementedException();
         }

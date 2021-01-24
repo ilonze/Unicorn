@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using Unicorn.Datas;
@@ -13,8 +14,9 @@ namespace Unicorn.Middlewares
         protected IUnicornCacheManager UnicornCacheManager { get; }
         public UnicornCacheMiddleware(
             UnicornContext context,
+            IOptions<UnicornOptions> unicornOptions,
             IUnicornCacheManager unicornCacheManager)
-            : base(context.RouteRule.CacheOptions, context)
+            : base(context.RouteRule.CacheOptions, context, unicornOptions)
         {
             UnicornCacheManager = unicornCacheManager;
         }
@@ -36,8 +38,11 @@ namespace Unicorn.Middlewares
                         await next(context);
                         if (UnicornContext.ResponseData?.StatusCode == 200)
                         {
-                            var seconds = Options.TtlSeconds;
-                            await UnicornCacheManager.SetResponseDataAsync(key, UnicornContext.ResponseData, TimeSpan.FromSeconds(seconds));
+                            var seconds = Options.Expiry;
+                            await UnicornCacheManager.SetResponseDataAsync(
+                                key,
+                                UnicornContext.ResponseData,
+                                TimeSpan.FromSeconds(seconds));
                         }
                     }
                 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace Unicorn.Middlewares
     public class UnicornRequestMiddleware : UnicornMiddlewareBase<RequestOptions>
     {
         public UnicornRequestMiddleware(
-            UnicornContext context)
-            : base(context.RouteRule.RequestOptions, context)
+            UnicornContext context, IOptions<UnicornOptions> unicornOptions)
+            : base(context.RouteRule.RequestOptions, context, unicornOptions)
         {
         }
         public override async Task InvokeAsync(HttpContext context, RequestDelegate next)

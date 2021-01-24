@@ -14,8 +14,8 @@ namespace Unicorn.Middlewares
 {
     public class UnicornABListMiddleware : UnicornMiddlewareBase<ABListOptions>
     {
-        public UnicornABListMiddleware(UnicornContext context)
-            :base(context.RouteRule.ABListOptions, context)
+        public UnicornABListMiddleware(UnicornContext context, IOptions<UnicornOptions> unicornOptions)
+            :base(context.RouteRule.ABListOptions, context, unicornOptions)
         {
         }
         public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -111,7 +111,7 @@ namespace Unicorn.Middlewares
                     }
                     if (_ip.Count(r => r == '.') < 3)
                     {
-                        _ip = _ip + ".";
+                        _ip += ".";
                         if (userIp.StartsWith(_ip))
                         {
                             return true;

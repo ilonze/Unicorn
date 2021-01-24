@@ -11,6 +11,6 @@ namespace Unicorn.Providers.Aggregates
 {
     public interface IAggregateProvider: IProvider
     {
-        Task<ResponseData> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default);
+        Task<ResponseData> AggregateAsync(UnicornContext context, AggregateOptions aggregateOptions, CancellationToken token = default);
     }
 }

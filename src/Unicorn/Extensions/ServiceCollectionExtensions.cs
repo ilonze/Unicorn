@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Routing.Internal;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using Unicorn.Datas;
+using Unicorn.Managers.Caches;
 using Unicorn.Options;
 using Unicorn.Providers.Aggregates;
 using Unicorn.Providers.DataFormats;
@@ -22,7 +19,10 @@ namespace Unicorn.Extensions
     {
         public static IServiceCollection AddUnicorn(this IServiceCollection services, Action<UnicornOptions> optionsSetup = null)
         {
-            services.AddCore();
+            services.AddCore()
+                .AddSingleton<IUnicornCacheManager, UnicornCacheManager>();
+
+            services.AddErrorResponseDataModel<ErrorResponseData>();
 
             services.AddAggregateProviders();
             services.AddDataFormatProviders();
@@ -51,6 +51,7 @@ namespace Unicorn.Extensions
                     routeRule.RateLimitOptions ??= options.GlobalOptions.RateLimitOptions;
                     routeRule.SignOptions ??= options.GlobalOptions.SignOptions;
                     routeRule.EncryptOptions ??= options.GlobalOptions.EncryptOptions;
+                    routeRule.DataFormatOptions ??= options.GlobalOptions.DataFormatOptions;
                 }
             });
 
@@ -59,133 +60,149 @@ namespace Unicorn.Extensions
             return services;
         }
 
+        public static IServiceCollection AddErrorResponseDataModel<TModel>(this IServiceCollection services)
+            where TModel: class, IErrorResponseData
+        {
+            var descriptor = services.FirstOrDefault(r => r.ServiceType == typeof(IEncryptProvider));
+            if(descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+            return services.AddTransient(typeof(IEncryptProvider), typeof(TModel));
+        }
+
         public static IServiceCollection AddUnicorn(this IServiceCollection services, IConfiguration configuration, Action<UnicornOptions> optionsSetup = null)
         {
-            services.Configure<UnicornOptions>(configuration);
-            return services.AddUnicorn(optionsSetup);
+            return services.Configure<UnicornOptions>(configuration)
+                .AddUnicorn(optionsSetup);
+        }
+
+        public static IServiceCollection AddAggregateProvider<TAggregateProvider>(this IServiceCollection services)
+            where TAggregateProvider: class, IAggregateProvider
+        {
+            return services.AddScoped<TAggregateProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddAggregateProvider<TAggregateProvider>();
+                });
         }
 
         public static IServiceCollection AddAggregateProviders(this IServiceCollection services)
         {
-            services.AddScoped<DefaultAggregateProvider>();
-            services.AddScoped<ByteAggregateProvider>();
-            services.AddScoped<JsonMerginAggregateProvider>();
-            services.AddScoped<TextAggregateProvider>();
+            return services.AddAggregateProvider<DefaultAggregateProvider>()
+                .AddAggregateProvider<ByteAggregateProvider>()
+                .AddAggregateProvider<JsonMerginAggregateProvider>()
+                .AddAggregateProvider<TextAggregateProvider>();
+        }
 
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddAggregateProvider<DefaultAggregateProvider>();
-                options.AddAggregateProvider<ByteAggregateProvider>();
-                options.AddAggregateProvider<JsonMerginAggregateProvider>();
-                options.AddAggregateProvider<TextAggregateProvider>();
-            });
-            return services;
+        public static IServiceCollection AddDataFormatProvider<TDataFormatProvider>(this IServiceCollection services)
+            where TDataFormatProvider: class, IDataFormatProvider
+        {
+            return services.AddScoped<TDataFormatProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddDataFormatProvider<TDataFormatProvider>();
+                });
         }
 
         public static IServiceCollection AddDataFormatProviders(this IServiceCollection services)
         {
-            services.AddScoped<Base64ToBytesDataFormatProvider>();
-            services.AddScoped<BytesToBase64DataFormatProvider>();
-            services.AddScoped<JsonpToJsonDataFormatProvider>();
-            services.AddScoped<JsonToJsonpDataFormatProvider>();
-            services.AddScoped<JsonToXmlDataFormatProvider>();
-            services.AddScoped<XmlToJsonDataFormatProvider>();
-            services.AddScoped<YamlToJsonDataFormatProvider>();
-            services.AddScoped<JsonToYamlDataFormatProvider>();
-            services.AddScoped<XmlToYamlDataFormatProvider>();
-            services.AddScoped<YamlToXmlDataFormatProvider>();
+            return services.AddDataFormatProvider<Base64ToBytesDataFormatProvider>()
+                .AddDataFormatProvider<BytesToBase64DataFormatProvider>()
+                .AddDataFormatProvider<JsonpToJsonDataFormatProvider>()
+                .AddDataFormatProvider<JsonToJsonpDataFormatProvider>()
+                .AddDataFormatProvider<JsonToXmlDataFormatProvider>()
+                .AddDataFormatProvider<XmlToJsonDataFormatProvider>()
+                .AddDataFormatProvider<YamlToJsonDataFormatProvider>()
+                .AddDataFormatProvider<JsonToYamlDataFormatProvider>()
+                .AddDataFormatProvider<XmlToYamlDataFormatProvider>()
+                .AddDataFormatProvider<YamlToXmlDataFormatProvider>();
+        }
 
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddDataFormatProvider<Base64ToBytesDataFormatProvider>();
-                options.AddDataFormatProvider<BytesToBase64DataFormatProvider>();
-                options.AddDataFormatProvider<JsonpToJsonDataFormatProvider>();
-                options.AddDataFormatProvider<JsonToJsonpDataFormatProvider>();
-                options.AddDataFormatProvider<JsonToXmlDataFormatProvider>();
-                options.AddDataFormatProvider<XmlToJsonDataFormatProvider>();
-                options.AddDataFormatProvider<YamlToJsonDataFormatProvider>();
-                options.AddDataFormatProvider<JsonToYamlDataFormatProvider>();
-                options.AddDataFormatProvider<XmlToYamlDataFormatProvider>();
-                options.AddDataFormatProvider<YamlToXmlDataFormatProvider>();
-            });
-            return services;
+        public static IServiceCollection AddEncryptProvider<TEncryptProvider>(this IServiceCollection services)
+            where TEncryptProvider: class, IEncryptProvider
+        {
+            return services.AddScoped<TEncryptProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddEncryptProvider<TEncryptProvider>();
+                });
         }
 
         public static IServiceCollection AddEncryptProviders(this IServiceCollection services)
         {
-            services.AddScoped<AesEncryptProvider>();
-            services.AddScoped<DesEncryptProvider>();
-            services.AddScoped<RsaEncryptProvider>();
+            return services.AddEncryptProvider<AesEncryptProvider>()
+                .AddEncryptProvider<DesEncryptProvider>()
+                .AddEncryptProvider<RsaEncryptProvider>();
+        }
 
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddEncryptProvider<AesEncryptProvider>();
-                options.AddEncryptProvider<DesEncryptProvider>();
-                options.AddEncryptProvider<RsaEncryptProvider>();
-            });
-            return services;
+        public static IServiceCollection AddFileProvider<TFileProvider>(this IServiceCollection services)
+            where TFileProvider: class, IFileProvider
+        {
+            return services.AddScoped<TFileProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddFileProvider<TFileProvider>();
+                });
         }
 
         public static IServiceCollection AddFileProviders(this IServiceCollection services)
         {
-            services.AddScoped<StaticFileProvider>();
-            services.AddScoped<VirtualFileProvider>();
+            return services.AddFileProvider<StaticFileProvider>()
+                .AddFileProvider<VirtualFileProvider>();
+        }
 
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddFileProvider<StaticFileProvider>();
-                options.AddFileProvider<VirtualFileProvider>();
-            });
-            return services;
+        public static IServiceCollection AddLoadBalanceProvider<TLoadBalanceProvider>(this IServiceCollection services)
+            where TLoadBalanceProvider: class, ILoadBalanceProvider
+        {
+            return services.AddScoped<TLoadBalanceProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddLoadBalanceProvider<TLoadBalanceProvider>();
+                });
         }
 
         public static IServiceCollection AddLoadBalanceProviders(this IServiceCollection services)
         {
-            services.AddScoped<NoneLoadBalanceProvider>();
-            services.AddScoped<LeastConnectionLoadBalanceProvider>();
-            services.AddScoped<RandomLoadBalanceProvider>();
-            services.AddScoped<RoundRobinLoadBalanceProvider>();
+            return services.AddLoadBalanceProvider<LeastConnectionLoadBalanceProvider>()
+                .AddLoadBalanceProvider<RandomLoadBalanceProvider>()
+                .AddLoadBalanceProvider<RoundRobinLoadBalanceProvider>();
+        }
 
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddLoadBalanceProvider<NoneLoadBalanceProvider>();
-                options.AddLoadBalanceProvider<LeastConnectionLoadBalanceProvider>();
-                options.AddLoadBalanceProvider<RandomLoadBalanceProvider>();
-                options.AddLoadBalanceProvider<RoundRobinLoadBalanceProvider>();
-            });
-            return services;
+        public static IServiceCollection AddRateLimitProvider<TRateLimitProvider>(this IServiceCollection services)
+            where TRateLimitProvider: class, IRateLimitProvider
+        {
+            return services.AddScoped<TRateLimitProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddRateLimitProvider<TRateLimitProvider>();
+                });
         }
 
         public static IServiceCollection AddRateLimitProviders(this IServiceCollection services)
         {
-            services.AddScoped<CookieRateLimitProvider>();
-            services.AddScoped<GeneralRateLimitProvider>();
-            services.AddScoped<HeaderRateLimitProvider>();
-            services.AddScoped<IpRateLimitProvider>();
-            services.AddScoped<UserAgentRateLimitProvider>();
+            return services.AddRateLimitProvider<CookieRateLimitProvider>()
+                .AddRateLimitProvider<GeneralRateLimitProvider>()
+                .AddRateLimitProvider<HeaderRateLimitProvider>()
+                .AddRateLimitProvider<IpRateLimitProvider>()
+                .AddRateLimitProvider<UserAgentRateLimitProvider>();
+        }
 
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddRateLimitProvider<CookieRateLimitProvider>();
-                options.AddRateLimitProvider<GeneralRateLimitProvider>();
-                options.AddRateLimitProvider<HeaderRateLimitProvider>();
-                options.AddRateLimitProvider<IpRateLimitProvider>();
-                options.AddRateLimitProvider<UserAgentRateLimitProvider>();
-            });
-            return services;
+        public static IServiceCollection AddSignProvider<TSignProvider>(this IServiceCollection services)
+            where TSignProvider: class, ISignProvider
+        {
+            return services.AddScoped<TSignProvider>()
+                .Configure<UnicornOptions>(options =>
+                {
+                    options.AddSignProvider<TSignProvider>();
+                });
         }
 
         public static IServiceCollection AddSignProviders(this IServiceCollection services)
         {
-            services.AddScoped<Md5SignProvider>();
-            services.AddScoped<RsaSignProvider>();
-
-            services.Configure<UnicornOptions>(options =>
-            {
-                options.AddSignProvider<Md5SignProvider>();
-                options.AddSignProvider<RsaSignProvider>();
-            });
-            return services;
+            return services.AddSignProvider<Md5SignProvider>()
+                .AddSignProvider<HashSignProvider>()
+                .AddSignProvider<RsaSignProvider>();
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Unicorn.Datas;
-using Unicorn.Options;
 
 namespace Unicorn.Providers.RateLimits
 {
@@ -14,9 +12,15 @@ namespace Unicorn.Providers.RateLimits
         public const string ProviderName = "UserAgent";
         public string Name => ProviderName;
 
-        public Task<string> CreateKeyAsync(HttpContext context, UnicornContext unicornContext)
+        public Task<string> CreateKeyAsync(UnicornContext context, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            if (token.IsCancellationRequested)
+            {
+                return Task.FromResult("");
+            }
+            var featureKey = context.RequestData.Url + "@" + context.RequestData.Headers["User-Agent"];
+            featureKey = featureKey.Md5();
+            return Task.FromResult(featureKey);
         }
     }
 }

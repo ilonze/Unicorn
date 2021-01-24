@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,8 +14,9 @@ namespace Unicorn.Middlewares
         protected IUnicornCacheManager UnicornCacheManager { get; }
         public UnicornCorsMiddleware(
             UnicornContext context,
+            IOptions<UnicornOptions> unicornOptions,
             IUnicornCacheManager unicornCacheManager)
-            : base(context.RouteRule.CorsOptions, context)
+            : base(context.RouteRule.CorsOptions, context, unicornOptions)
         {
             UnicornCacheManager = unicornCacheManager;
         }
@@ -37,7 +39,7 @@ namespace Unicorn.Middlewares
         {
             if (Options.Origins.Contains(host) || Options.Origins.Contains("*"))
             {
-                responseData.Headers["Access-Control-Allow-Origin"] = Options.Origins.Contains("*") ? "*" : host;
+                responseData.Headers["Access-Control-Allow-Origin"] = Options.Origins.Contains(host) ? host : "*";
                 responseData.Headers["Access-Control-Allow-Headers"] = Options.Headers;
                 responseData.Headers["Access-Control-Allow-Methods"] = Options.Methods;
                 responseData.Headers["Access-Control-Allow-Credentials"] = Options.Credentials.ToString().ToLower();

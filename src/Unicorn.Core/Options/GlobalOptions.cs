@@ -22,6 +22,7 @@ namespace Unicorn.Options
         public CorsOptions CorsOptions { get; set; }
         public EncryptOptions EncryptOptions { get; set; }
         public SignOptions SignOptions { get; set; }
+        public DataFormatOptions DataFormatOptions { get; set; }
         public bool? RouteIsCaseSensitive { get; set; }
         public int Timeout { get; set; }
     }

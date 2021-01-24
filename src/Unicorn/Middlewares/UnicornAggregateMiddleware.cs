@@ -1,33 +1,37 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Unicorn.Datas;
-using Unicorn.Managers.Aggregates;
 using Unicorn.Options;
+using Unicorn.Providers.Aggregates;
 
 namespace Unicorn.Middlewares
 {
     public class UnicornAggregateMiddleware : UnicornMiddlewareBase<AggregateOptions>
     {
-        protected IUnicornAggregateManager AggregateManager { get; }
         public UnicornAggregateMiddleware(
             UnicornContext context,
-            IUnicornAggregateManager aggregateManager)
-            : base(context.RouteRule.AggregateOptions, context)
+            IOptions<UnicornOptions> unicornOptions)
+            : base(context.RouteRule.AggregateOptions, context, unicornOptions)
         {
-            AggregateManager = aggregateManager;
         }
         public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            if (Options?.IsEnabled == true)
+            await next(context);
+            if (Options?.IsEnabled != true
+                || (Options?.Provider).IsNullOrWhiteSpace())
             {
-                await next(context);
                 return;
             }
-
-            var responseData = await AggregateManager.AggregateAsync(context, UnicornContext);
+            if (UnicornOptions.AggregateProviders?.ContainsKey(Options.Provider) != true)
+            {
+                return;
+            }
+            var aggregateType = UnicornOptions.AggregateProviders[Options.Provider];
+            var provider = Services.GetRequiredService(aggregateType) as IAggregateProvider;
+            var responseData = await provider.AggregateAsync(UnicornContext, Options, context.RequestAborted);
             UnicornContext.ResponseData = responseData;
         }
     }

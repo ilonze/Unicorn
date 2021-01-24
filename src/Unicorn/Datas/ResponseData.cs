@@ -14,6 +14,6 @@ namespace Unicorn.Datas
         public Dictionary<string, StringValues> Headers { get; set; }
         public int StatusCode { get; set; } = 200;
         public string StatusMessage { get; set; } = "OK";
-        public HttpContext HttpContext { get; set; }
+        public string ContentType { get; set; }
     }
 }

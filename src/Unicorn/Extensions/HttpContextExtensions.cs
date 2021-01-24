@@ -44,6 +44,7 @@ namespace Unicorn.Extensions
             if (route != null)
             {
                 var unicornContext = context.RequestServices.GetRequiredService<UnicornContext>();
+                unicornContext.HttpContext = context;
                 unicornContext.RouteRule = route;
                 unicornContext.RouteData = routeData;
                 var list = new List<DownstreamRoute>();

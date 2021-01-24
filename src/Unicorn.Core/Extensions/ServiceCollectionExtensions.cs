@@ -11,10 +11,10 @@ namespace Unicorn.Extensions
     {
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
-            services.TryAddTransient<IJsonSerializer, NewtonsoftJsonSerializer>();
-            services.TryAddTransient<IDistributedCacheSerializer, DistributedCacheSerializer>();
-            services.TryAddSingleton(typeof(IUnicornCacheProvider), typeof(MemoryUnicornCacheProvider));
-            services.TryAddSingleton(typeof(IUnicornCacheProvider), typeof(DistributedUnicornCacheProvider));
+            services.TryAddScoped<IJsonSerializer, NewtonsoftJsonSerializer>();
+            services.TryAddScoped<IDistributedCacheSerializer, DistributedCacheSerializer>();
+            services.TryAddSingleton<MemoryUnicornCacheProvider>();
+            services.TryAddSingleton<DistributedUnicornCacheProvider>();
             return services;
         }
     }

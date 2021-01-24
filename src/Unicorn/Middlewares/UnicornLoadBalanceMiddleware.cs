@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace Unicorn.Middlewares
 {
     public class UnicornLoadBalanceMiddleware : UnicornMiddlewareBase<LoadBalanceOptions>
     {
-        public UnicornLoadBalanceMiddleware(UnicornContext context)
-            : base(context.RouteRule.LoadBalancerOptions, context)
+        public UnicornLoadBalanceMiddleware(UnicornContext context, IOptions<UnicornOptions> unicornOptions)
+            : base(context.RouteRule.LoadBalancerOptions, context, unicornOptions)
         {
 
         }

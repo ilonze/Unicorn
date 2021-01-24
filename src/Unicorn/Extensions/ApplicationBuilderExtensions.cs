@@ -41,6 +41,7 @@ namespace Unicorn.Extensions
                 app.UseMiddleware<UnicornQoSMiddleware>();
                 app.UseMiddleware<UnicornDegradationMiddleware>();
                 app.UseMiddleware<UnicornLoadBalanceMiddleware>();
+                app.UseMiddleware<UnicornDataFormatMiddleware>();
                 app.UseMiddleware<UnicornRequestMiddleware>();
                 app.UseMiddleware<UnicornAggregateMiddleware>();
                 app.UseMiddleware<UnicornResponseMiddleware>();

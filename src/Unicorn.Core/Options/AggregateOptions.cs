@@ -9,7 +9,7 @@ namespace Unicorn.Options
     {
         public bool IsEnabled { get; set; } = false;
         public bool IsAggregateFromSamePath { get; set; } = false;
-        public string AggregateProvider { get; set; }
+        public string Provider { get; set; }
         public Dictionary<string, string> AggregateKeys { get; set; } = new Dictionary<string, string>();
         public bool AllowPartialResponse { get; set; } = true;
     }

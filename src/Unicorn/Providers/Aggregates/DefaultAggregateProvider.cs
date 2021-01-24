@@ -24,16 +24,16 @@ namespace Unicorn.Providers.Aggregates
         public const string ProviderName = "Default";
         public string Name => ProviderName;
 
-        public async Task<ResponseData> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
+        public async Task<ResponseData> AggregateAsync(UnicornContext context, AggregateOptions aggregateOptions, CancellationToken token = default)
         {
-            var keys = messages.ToDictionary(r => r.Key, r => aggregateOptions.AggregateKeys.ContainsKey(r.Key) ? aggregateOptions.AggregateKeys[r.Key] : r.Key);
-            var datas = messages.ToDictionary(r => keys[r.Key], async r => await ParseData(r.Value, token));
+            var keys = context.ResponseMessages.ToDictionary(r => r.Key, r => aggregateOptions.AggregateKeys.ContainsKey(r.Key) ? aggregateOptions.AggregateKeys[r.Key] : r.Key);
+            var datas = context.ResponseMessages.ToDictionary(r => keys[r.Key], async r => await ParseData(r.Value, token));
             var json = _jsonSerializer.Serialize(datas);
             var result = new ResponseData
             {
                 BodyString = json
             };
-            await ParseHeaders(messages, result, token);
+            await ParseHeaders(context.ResponseMessages, result, token);
             return result;
         }
 

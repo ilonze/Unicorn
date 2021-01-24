@@ -14,12 +14,12 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "JsonToXml";
         public string Name => ProviderName;
 
-        public Task<ResponseData> ConvertAsync(ResponseData data, CancellationToken token = default)
+        public Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<RequestData> ConvertAsync(RequestData data, CancellationToken token = default)
+        public Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default)
         {
             throw new NotImplementedException();
         }

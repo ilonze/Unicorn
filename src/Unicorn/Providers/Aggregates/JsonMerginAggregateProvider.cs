@@ -22,11 +22,11 @@ namespace Unicorn.Providers.Aggregates
         public const string ProviderName = "JsonMergin";
         public string Name => ProviderName;
 
-        public async Task<ResponseData> AggregateAsync(IEnumerable<KeyValuePair<string, HttpResponseMessage>> messages, AggregateOptions aggregateOptions, CancellationToken token = default)
+        public async Task<ResponseData> AggregateAsync(UnicornContext context, AggregateOptions aggregateOptions, CancellationToken token = default)
         {
             var data = JObject.FromObject(new { });
 
-            foreach (var message in messages)
+            foreach (var message in context.ResponseMessages)
             {
                 var json = await message.Value.Content.ReadAsStringAsync(token);
                 data.Merge(_jsonSerializer.Deserialize<JObject>(json));
@@ -36,7 +36,7 @@ namespace Unicorn.Providers.Aggregates
             {
                 BodyString = jsonString
             };
-            await DefaultAggregateProvider.ParseHeaders(messages, result, token);
+            await DefaultAggregateProvider.ParseHeaders(context.ResponseMessages, result, token);
             return result;
         }
     }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unicorn.Datas;
-using Unicorn.Extensions;
 using Unicorn.Managers.Caches;
 using Unicorn.Options;
 
@@ -15,8 +15,9 @@ namespace Unicorn.Middlewares
         protected IUnicornCacheManager UnicornCacheManager { get; }
         public UnicornAntiResubmitMiddleware(
             UnicornContext context,
+            IOptions<UnicornOptions> unicornOptions,
             IUnicornCacheManager unicornCacheManager)
-            : base(context.RouteRule.AntiResubmitOptions, context)
+            : base(context.RouteRule.AntiResubmitOptions, context, unicornOptions)
         {
             UnicornCacheManager = unicornCacheManager;
         }

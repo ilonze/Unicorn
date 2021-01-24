@@ -15,17 +15,17 @@ namespace Unicorn.Options
         /// </summary>
         public bool IsEnabled { get; set; } = false;
 
+        public string Provider { get; set; }
+
         /// <summary>
-        /// Rate limit period as in 1s, 1m, 1h
+        /// Rate limit period
         /// </summary>
         public long Period { get; set; }
-
-        public long PeriodTimespan { get; set; }
 
         /// <summary>
         /// Maximum number of requests that a client can make in a defined period
         /// </summary>
-        public long Limit { get; set; }
+        public int Limit { get; set; }
 
         public int QuotaExceededStatusCode { get; set; } = 429;
 
