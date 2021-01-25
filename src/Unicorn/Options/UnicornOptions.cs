@@ -19,6 +19,7 @@ namespace Unicorn.Options
         public bool UnicornDataUseDistributedCace { get; set; }
         public bool ResponseDataUseDistributedCace { get; set; }
         public bool AntiResubmitDataUseDistributedCace { get; set; }
+        public bool QoSDataUseDistributedCace { get; set; }
         public List<RouteRule> RouteRules { get; set; } = new List<RouteRule>();
         public List<Service> Services { get; set; } = new List<Service>();
         public GlobalOptions GlobalOptions { get; set; }

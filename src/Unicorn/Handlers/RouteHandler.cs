@@ -163,6 +163,7 @@ namespace Unicorn.Handlers
             {
                 var route = _routeUpstreamDictionary[routeKey];
                 _options.RouteRules.Remove(route);
+                //TODO:
                 _routeDownstreamDictionary.Remove(routeKey);
             }
         }

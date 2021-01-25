@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace System
 {
@@ -42,6 +43,16 @@ namespace System
         public static string JoinAsString(this IEnumerable<string> strs, string splitor)
         {
             return string.Join(splitor, strs);
+        }
+
+        public static string UrlEncode(this string str)
+        {
+            return HttpUtility.UrlEncode(str);
+        }
+
+        public static string UrlDecode(this string str)
+        {
+            return HttpUtility.UrlDecode(str);
         }
     }
 }

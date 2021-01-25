@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.Primitives;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unicorn.Options
 {
@@ -16,14 +12,20 @@ namespace Unicorn.Options
         public Dictionary<string, string> AddHeadersFromQueries { get; set; }
         public Dictionary<string, string> HeaderTransform { get; set; }
         public Dictionary<string, StringValues> AddQueries { get; set; }
-        public Dictionary<string, string> AddQueriesFromRoute { get; set; }
+        public Dictionary<string, string> AddQueriesFromRoutes { get; set; }
         public Dictionary<string, string> AddQueriesFromForms { get; set; }
         public Dictionary<string, string> AddQueriesFromHeaders { get; set; }
         public Dictionary<string, string> QueryTransform { get; set; }
         public Dictionary<string, StringValues> AddForms { get; set; }
-        public Dictionary<string, string> AddFormsFromRoute { get; set; }
+        public Dictionary<string, string> AddFormsFromRoutes { get; set; }
         public Dictionary<string, string> AddFormsFromHeaders { get; set; }
         public Dictionary<string, string> AddFormsFromQueries { get; set; }
         public Dictionary<string, string> FormTransform { get; set; }
+        public Dictionary<string, string> AddRoutes { get; set; }
+        public Dictionary<string, string> AddRoutesFromHeaders { get; set; }
+        public Dictionary<string, string> AddRoutesFromQueries { get; set; }
+        public Dictionary<string, string> AddRoutesFromForms { get; set; }
+        public Dictionary<string, string> RouteTransform { get; set; }
+        public int Timeout { get; set; }
     }
 }
