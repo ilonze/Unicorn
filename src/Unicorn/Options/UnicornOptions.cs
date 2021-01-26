@@ -26,6 +26,7 @@ namespace Unicorn.Options
         public bool IsShareLoadBalance { get; set; }
         public bool IsShareRateLimit { get; set; }
         public string CacheKeyPrefix { get; set; }
+        public int HealthCheckInterval { get; set; }
 
         public Dictionary<string, Type> AggregateProviders { get; set; } = new Dictionary<string, Type>();
         public Dictionary<string, Type> LoadBalanceProviders { get; set; } = new Dictionary<string, Type>();

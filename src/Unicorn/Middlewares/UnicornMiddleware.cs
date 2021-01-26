@@ -95,18 +95,11 @@ namespace Unicorn.Middlewares
                 await response.WriteAsync(responseData.BodyString);
             }
 
-            //TODO:请求加签验签 Sign
-            //TODO:服务降级升级 
-            //TODO:请求加密解密 Encrypt
-            //TODO:处理熔断 QoS
-            //TODO:处理限流 Limit
-            //TODO:黑白名单 AllowedList&BlockedList
-            //TODO:防重复提交
             //TODO:请求防伪
-            //TODO:跨域
-            //TODO:格式转换
             //TODO:服务健康检查
+            
             //TODO:开放接口文档
+
         }
     }
 }

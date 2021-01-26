@@ -17,7 +17,7 @@ namespace Unicorn
         public int Priority { get; set; }
         public string[] Tags { get; set; }
         public bool IsFromHub { get; set; }
-        public DateTime RegistorTime { get; set; }
-        public DateTime CheckTime { get; set; }
+        public DateTimeOffset RegistorTime { get; set; }
+        public DateTimeOffset CheckTime { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,9 +45,11 @@ namespace Unicorn.Extensions
             if (route != null)
             {
                 var unicornContext = context.RequestServices.GetRequiredService<UnicornContext>();
+                var unicornOptions = context.RequestServices.GetRequiredService<IOptions<UnicornOptions>>().Value;
                 unicornContext.HttpContext = context;
                 unicornContext.RouteRule = route;
                 unicornContext.RouteData = routeData;
+                unicornContext.AlternativeServices = unicornOptions.Services.GroupBy(r => r.Name).ToDictionary(r => r.Key, r => r.Where(r => r.IsHealth).OrderByDescending(r => r.Weight).AsEnumerable());
                 var list = new List<DownstreamRoute>();
                 foreach (var dsRoute in route.DownstreamRoutes)
                 {
