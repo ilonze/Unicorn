@@ -19,6 +19,8 @@ namespace Unicorn.Options
         public ABListOptions ABListOptions { get; set; }
         public CacheOptions CacheOptions { get; set; }
         public AntiResubmitOptions AntiResubmitOptions { get; set; }
+        public AntiForgeryOptions AntiForgeryOptions { get; set; }
+        public AntiTheftLinkOptions AntiTheftLinkOptions { get; set; }
         public CorsOptions CorsOptions { get; set; }
         public EncryptOptions EncryptOptions { get; set; }
         public SignOptions SignOptions { get; set; }
