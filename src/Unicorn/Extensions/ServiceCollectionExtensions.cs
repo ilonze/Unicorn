@@ -32,6 +32,11 @@ namespace Unicorn.Extensions
             services.AddRateLimitProviders();
             services.AddSignProviders();
 
+            //services.AddAntiforgery(options =>
+            //{
+            //    options.HeaderName = "";
+            //});
+
             services.Configure<UnicornOptions>(options =>
             {
                 optionsSetup?.Invoke(options);

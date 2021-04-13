@@ -16,9 +16,26 @@ namespace Unicorn.Middlewares
 
         }
 
-        public override Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            throw new NotImplementedException();
+            var referer = context.Request.Headers["Referer"];
+            if (Options?.IsEnabled != true || string.IsNullOrWhiteSpace(referer))
+            {
+                await next(context);
+                return;
+            }
+            var refererUri = new Uri(referer);
+            if (refererUri.Host == context.Request.Host.Value
+                || Options.AllowHosts.Contains(refererUri.Host))
+            {
+                await next(context);
+                return;
+            }
+            UnicornContext.ResponseData = new ResponseData
+            {
+                StatusCode = Options.BlockedStatusCode,
+                StatusMessage = Options.BlockedMessage
+            };
         }
     }
 }

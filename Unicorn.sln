@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unicorn.Service", "src\Unic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unicorn.Core", "src\Unicorn.Core\Unicorn.Core.csproj", "{31001213-59C9-47A6-ADCC-31CF49FA997B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicorn.Client", "src\Unicorn.Client\Unicorn.Client.csproj", "{99B9A640-26E2-4ED3-9151-74926407CCDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unicorn.Client", "src\Unicorn.Client\Unicorn.Client.csproj", "{99B9A640-26E2-4ED3-9151-74926407CCDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicorn.Discovery", "src\Unicorn.Discovery\Unicorn.Discovery.csproj", "{16634AA9-680A-4EE0-8308-CBD04C13B7E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{99B9A640-26E2-4ED3-9151-74926407CCDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99B9A640-26E2-4ED3-9151-74926407CCDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99B9A640-26E2-4ED3-9151-74926407CCDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16634AA9-680A-4EE0-8308-CBD04C13B7E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16634AA9-680A-4EE0-8308-CBD04C13B7E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16634AA9-680A-4EE0-8308-CBD04C13B7E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16634AA9-680A-4EE0-8308-CBD04C13B7E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{7429F51D-A687-4FE7-9296-F3A882F1B9A0} = {3F781F62-7B37-4358-A424-F029FB7F48F2}
 		{31001213-59C9-47A6-ADCC-31CF49FA997B} = {3F781F62-7B37-4358-A424-F029FB7F48F2}
 		{99B9A640-26E2-4ED3-9151-74926407CCDE} = {3F781F62-7B37-4358-A424-F029FB7F48F2}
+		{16634AA9-680A-4EE0-8308-CBD04C13B7E6} = {3F781F62-7B37-4358-A424-F029FB7F48F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CB764695-AD94-4C49-B44D-51B46BF774E7}
