@@ -10,7 +10,7 @@ namespace Unicorn.Providers.DataFormats
 {
     public interface IDataFormatProvider: IProvider
     {
-        Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default);
-        Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default);
+        Task<TData> ConvertAsync<TData>(UnicornContext context, TData data, CancellationToken token = default)
+            where TData: RequestResponseDataBase;
     }
 }

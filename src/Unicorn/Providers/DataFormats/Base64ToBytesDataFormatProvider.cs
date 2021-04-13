@@ -13,19 +13,11 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "Base64ToBytes";
         public string Name => ProviderName;
 
-        public Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default)
-        {
-            data.Body = Convert.FromBase64String(data.Text);
-            data.Text = null;
-            data.Headers["Content-Type"] = "application/octet-stream";
-            return Task.FromResult(data);
-        }
-
-        public Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default)
+        public Task<TData> ConvertAsync<TData>(UnicornContext context, TData data, CancellationToken token = default) where TData : RequestResponseDataBase
         {
             data.Body = Convert.FromBase64String(data.BodyString);
             data.BodyString = null;
-            data.ContentType = "application/octet-stream";
+            data.ContentType = ContentTypes.Application.OctetStream;
             return Task.FromResult(data);
         }
     }

@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace Unicorn.Datas
 {
-    public class ResponseData
+    public class ResponseData: RequestResponseDataBase
     {
-        public byte[] Body { get; set; }
-        public string BodyString { get; set; }
-        public Dictionary<string, StringValues> Headers { get; set; }
         public int StatusCode { get; set; } = 200;
         public string StatusMessage { get; set; } = "OK";
-        public string ContentType { get; set; }
         public List<(string name, string value, CookieOptions options)> AppendCookies { get; set; }
             = new List<(string name, string value, CookieOptions options)>();
         public List<(string name, CookieOptions options)> DeleteCookies { get; set; }

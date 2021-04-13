@@ -121,13 +121,9 @@ namespace Unicorn.Middlewares
                     content = form;
                 }
             }
-            else if (request.HasJsonContentType)
+            else if (request.HasJsonContentType || request.HasXmlContentType || request.HasTextContentType)
             {
-                content = new StringContent(request.Json, Encoding.UTF8, request.ContentType);
-            }
-            else if (request.HasTextContentType)
-            {
-                content = new StringContent(request.Text, Encoding.UTF8, request.ContentType);
+                content = new StringContent(request.BodyString, Encoding.UTF8, request.ContentType);
             }
             else
             {

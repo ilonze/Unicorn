@@ -12,15 +12,13 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "JsonpToJson";
         public string Name => ProviderName;
 
-        public Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default)
+        public Task<TData> ConvertAsync<TData>(UnicornContext context, TData data, CancellationToken token = default) where TData : RequestResponseDataBase
         {
-            data.BodyString = data.BodyString[(data.BodyString.IndexOf("(") + 1)..].TrimEnd(';').TrimEnd(')');
-            data.ContentType = "application/json";
-            return Task.FromResult(data);
-        }
-
-        public Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default)
-        {
+            if (data is ResponseData)
+            {
+                data.BodyString = data.BodyString[(data.BodyString.IndexOf("(") + 1)..].TrimEnd(';').TrimEnd(')');
+                data.ContentType = ContentTypes.Application.Json;
+            }
             return Task.FromResult(data);
         }
     }

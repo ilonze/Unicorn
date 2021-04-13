@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Unicorn.Datas;
+using YamlDotNet.Serialization;
 
 namespace Unicorn.Providers.DataFormats
 {
@@ -14,14 +17,16 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "XmlToYaml";
         public string Name => ProviderName;
 
-        public Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default)
+        public Task<TData> ConvertAsync<TData>(UnicornContext context, TData data, CancellationToken token = default) where TData : RequestResponseDataBase
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default)
-        {
-            throw new NotImplementedException();
+            var doc = new XmlDocument();
+            doc.LoadXml(data.BodyString);
+            var json = JsonConvert.SerializeXmlNode(doc);
+            var jsonObject = JsonConvert.DeserializeObject(json);
+            var serializer = new Serializer();
+            data.BodyString = serializer.Serialize(jsonObject);
+            data.ContentType = ContentTypes.Application.Yaml;
+            return Task.FromResult(data);
         }
     }
 }

@@ -45,6 +45,8 @@ namespace Unicorn.Middlewares
                 Headers = request.Headers.ToDictionary(r => r.Key, r => r.Value),
                 HasFormContentType = request.HasFormContentType,
                 HasJsonContentType = request.HasJsonContentType(),
+                HasXmlContentType = request.ContentType?.ToLower()?.Contains("xml") == true,
+                HasYamlContentType = request.ContentType?.ToLower()?.Contains("yaml") == true,
                 HasTextContentType = request.ContentType?.ToLower()?.Contains("text") == true,
                 HasFormDataContentType = request.ContentType?.ToLower()?.Contains("form-data") == true,
                 Host = request.Host,
@@ -66,13 +68,9 @@ namespace Unicorn.Middlewares
                     await request.Body.CopyToAsync(stream);
                     UnicornContext.RequestData.Body = stream.ToArray();
                 }
-                if (context.Request.HasJsonContentType())
+                if (UnicornContext.RequestData.HasJsonContentType || UnicornContext.RequestData.HasTextContentType || UnicornContext.RequestData.HasXmlContentType)
                 {
-                    UnicornContext.RequestData.Json = Encoding.UTF8.GetString(UnicornContext.RequestData.Body);
-                }
-                else if (context.Request.ContentType?.ToLower()?.Contains("text") == true)
-                {
-                    UnicornContext.RequestData.Text = Encoding.UTF8.GetString(UnicornContext.RequestData.Body);
+                    UnicornContext.RequestData.BodyString = Encoding.UTF8.GetString(UnicornContext.RequestData.Body);
                 }
             }
 

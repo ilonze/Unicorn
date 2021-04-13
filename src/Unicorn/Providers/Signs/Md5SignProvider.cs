@@ -41,13 +41,9 @@ namespace Unicorn.Providers.Signs
                 return Task.FromResult(false);
             }
             var data = context.RequestData;
-            if (!data.Json.IsNullOrWhiteSpace())
+            if (!data.BodyString.IsNullOrWhiteSpace())
             {
-                return Task.FromResult(data.Json.Md5() == data.Headers[options.RequestHeader]);
-            }
-            if (!data.Text.IsNullOrWhiteSpace())
-            {
-                return Task.FromResult(data.Text.Md5() == data.Headers[options.RequestHeader]);
+                return Task.FromResult(data.BodyString.Md5() == data.Headers[options.RequestHeader]);
             }
             if (data.Body != null && data.Body.Length > 0)
             {

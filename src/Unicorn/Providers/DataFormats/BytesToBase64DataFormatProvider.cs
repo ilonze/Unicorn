@@ -14,19 +14,11 @@ namespace Unicorn.Providers.DataFormats
         public const string ProviderName = "BytesToBase64";
         public string Name => ProviderName;
 
-        public Task<ResponseData> ConvertAsync(UnicornContext context, ResponseData data, CancellationToken token = default)
+        public Task<TData> ConvertAsync<TData>(UnicornContext context, TData data, CancellationToken token = default) where TData : RequestResponseDataBase
         {
             data.BodyString = Convert.ToBase64String(data.Body);
             data.Body = null;
-            data.ContentType = "text/plain";
-            return Task.FromResult(data);
-        }
-
-        public Task<RequestData> ConvertAsync(UnicornContext context, RequestData data, CancellationToken token = default)
-        {
-            data.Text = Convert.ToBase64String(data.Body);
-            data.Body = null;
-            data.Headers["Content-Type"] = "text/plain";
+            data.ContentType = ContentTypes.Text.Plain;
             return Task.FromResult(data);
         }
     }
